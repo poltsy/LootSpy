@@ -1,4 +1,4 @@
-## Interface: 20400
+## Interface: 30200
 ## Title: LootSpy
 ## Notes: Watches Need/Greed rolls on loot
 ## SavedVariables: LootSpy_Saved
