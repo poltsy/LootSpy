@@ -167,8 +167,8 @@ function LootSpy_UpdateTable()
 			getglobal(buttonName..i.."GreedText"):SetText(LS_GREED..": "..LootSpySession[item]["greed"]);
 			getglobal(buttonName..i.."PassedText"):SetText(LS_PASSED..": "..LootSpySession[item]["passed"]);
 		end
-		itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
-		local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink);
+		itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
+		local _, _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink);
 		if (itemTexture) then
 			getglobal(buttonName..i.."ItemIcon"):SetTexture(itemTexture);
 		end
@@ -202,11 +202,11 @@ function LootSpy_ItemTooltip(id)
 	for item in pairs(LootSpySession) do
 		id = id - 1;
 		if (id == 0) then
-			itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
+			itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
 		end
 	end
 	GameTooltip:ClearLines();
-	GameTooltip:SetHyperlink("item:"..itemLink..":0:0:0:0:0:0:0");
+	GameTooltip:SetHyperlink("item:"..itemLink..":0:0:0:0:0:0:0:0");
 	GameTooltip:Show();
 end
 
