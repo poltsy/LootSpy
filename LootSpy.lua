@@ -168,7 +168,7 @@ function LootSpy_UpdateTable()
 			getglobal(buttonName..i.."PassedText"):SetText(LS_PASSED..": "..LootSpySession[item]["passed"]);
 		end
 		itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
-		local _, _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink);
+		local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink);
 		if (itemTexture) then
 			getglobal(buttonName..i.."ItemIcon"):SetTexture(itemTexture);
 		end
