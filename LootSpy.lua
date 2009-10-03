@@ -2,7 +2,7 @@
 -- Tehl of Defias Brotherhood(EU)
 -- Props to Yrys (Author of ChatLink) for wading through the nightmare that is Regex, mine is lifted directly from his addon.
 
-LootSpy_ChatFrameEvent = ChatFrame_OnEvent;
+LootSpy_ChatFrameEvent = ChatFrame_MessageEventHandler;
 
 LootSpySession = {}
 
@@ -121,7 +121,7 @@ function LootSpy_OnEvent()
 	end
 end
 
-function LootSpy_OnUpdate()
+function LootSpy_OnUpdate(self)
 	local i = 1;
 	for item in pairs(LootSpySession) do
 		if (LootSpySession[item]["timeWon"] > 0) and (LootSpy_Saved["fade"] > 0) then
@@ -268,19 +268,19 @@ function LootSpy_GetLootData(arg)
 	return itemName,playerName,rollType;
 end
 
-function ChatFrame_OnEvent(self, event)
+function ChatFrame_MessageEventHandler(self, event, ...)
 	if (LootSpy_Saved["on"] == true) and (LootSpy_IsALootMessage(arg1)) then
 		local itemName,playerName,rollType = LootSpy_GetLootData(arg1);
 		if (strfind(arg1,LS_ALLPASSED)) then
 			LootSpySession[itemName]["timeWon"] = GetTime();
-			LootSpy_ChatFrameEvent(self, event);
+			LootSpy_ChatFrameEvent(self, event, ...);
 			return;
 		end
 		if (strfind(arg1,LS_ITEMWON1) or strfind(arg1,LS_ITEMWON2)) then
 			if (LootSpySession[itemName]) then
 				LootSpySession[itemName]["timeWon"] = GetTime();
 			end
-			LootSpy_ChatFrameEvent(self, event);
+			LootSpy_ChatFrameEvent(self, event, ...);
 			return;
 		end
 		if not (LootSpySession[itemName]) then
@@ -309,5 +309,5 @@ function ChatFrame_OnEvent(self, event)
 			return;
 		end
 	end
-	LootSpy_ChatFrameEvent(self, event);
+	LootSpy_ChatFrameEvent(self, event, ...);
 end
