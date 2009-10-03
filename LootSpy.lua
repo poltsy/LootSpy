@@ -268,19 +268,19 @@ function LootSpy_GetLootData(arg)
 	return itemName,playerName,rollType;
 end
 
-function ChatFrame_OnEvent(event)
+function ChatFrame_OnEvent(self, event)
 	if (LootSpy_Saved["on"] == true) and (LootSpy_IsALootMessage(arg1)) then
 		local itemName,playerName,rollType = LootSpy_GetLootData(arg1);
 		if (strfind(arg1,LS_ALLPASSED)) then
 			LootSpySession[itemName]["timeWon"] = GetTime();
-			LootSpy_ChatFrameEvent(event);
+			LootSpy_ChatFrameEvent(self, event);
 			return;
 		end
 		if (strfind(arg1,LS_ITEMWON1) or strfind(arg1,LS_ITEMWON2)) then
 			if (LootSpySession[itemName]) then
 				LootSpySession[itemName]["timeWon"] = GetTime();
 			end
-			LootSpy_ChatFrameEvent(event);
+			LootSpy_ChatFrameEvent(self, event);
 			return;
 		end
 		if not (LootSpySession[itemName]) then
@@ -309,5 +309,5 @@ function ChatFrame_OnEvent(event)
 			return;
 		end
 	end
-	LootSpy_ChatFrameEvent(event);
+	LootSpy_ChatFrameEvent(self, event);
 end
