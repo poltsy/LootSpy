@@ -100,10 +100,20 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["compact"] = false;
 			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTOFF);
 			LootSpy_UpdateTable();
+			if (LootSpy_Saved["locked"] == false) then
+				for i = 1,5 do
+					getglobal("LootSpy_LootButton"..i):Show();
+				end
+			end
 		else
 			LootSpy_Saved["compact"] = true;
 			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTON);
 			LootSpy_UpdateTable();
+			if (LootSpy_Saved["locked"] == false) then
+				for i = 1,5 do
+					getglobal("LootSpy_CompactLootButton"..i):Show();
+				end
+			end
 		end
 	elseif (string.sub(arg,1,4) == "fade") then
 		local fadeTime = tonumber(string.sub(arg,5));
