@@ -17,9 +17,7 @@ function LootSpy_Init()
 	if not (LootSpy_Saved) then
 		LootSpy_Saved = {
 			["on"] = true,
-			-- I'd rather set locked to false if no settings are saved but there appears to be a bug
-			-- somewhere that prevents the frame from being shown so you'd have to lock it and then unlock again
-			["locked"] = true,
+			["locked"] = false,
 			["hideSpam"] = false,
 			["coordX"] = LootSpy_LootButton1:GetLeft(),
 			["coordY"] = LootSpy_LootButton1:GetTop(),
@@ -40,7 +38,19 @@ function LootSpy_Init()
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 	LootSpy_CompactLootButton1:ClearAllPoints();
 	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
-	
+
+	if (LootSpy_Saved["locked"] == false) then
+		for i = 1,5 do
+			local buttonName = "nil";
+			if (LootSpy_Saved["compact"] == true) then
+				buttonName = "LootSpy_CompactLootButton";
+			else
+				buttonName = "LootSpy_LootButton";
+			end
+			getglobal(buttonName..i):Show();
+		end
+	end
+
 	SLASH_LOOTSPY1 = "/lootspy";
 	SLASH_LOOTSPY2 = "/ls";
 	SlashCmdList["LOOTSPY"] = LootSpy_Slash;
