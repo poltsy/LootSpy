@@ -14,6 +14,7 @@ LS_SPAMOFF		=	"LootSpy will display all loot information.";
 LS_SPAMON		=	"LootSpy will hide 'x has selected y for [Item]' messages.";
 LS_NEWFADE		=	"LootSpy frame fade set to: ";
 LS_FADEWRONG	=	"Error: Fade value should be 0 or a time in seconds.";
+LS_SECONDS	=	" |rseconds."
 
 -- Frame Text
 LS_NEED			=	"Besoin";

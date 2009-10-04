@@ -1,4 +1,4 @@
--- LootSpyq
+-- LootSpy
 -- Tehl of Defias Brotherhood(EU)
 -- Props to Yrys (Author of ChatLink) for wading through the nightmare that is Regex, mine is lifted directly from his addon.
 
@@ -17,6 +17,8 @@ function LootSpy_Init()
 	if not (LootSpy_Saved) then
 		LootSpy_Saved = {
 			["on"] = true,
+			-- I'd rather set locked to false if no settings are saved but there appears to be a bug
+			-- somewhere that prevents the frame from being shown so you'd have to lock it and then unlock again
 			["locked"] = true,
 			["hideSpam"] = false,
 			["coordX"] = LootSpy_LootButton1:GetLeft(),
@@ -97,18 +99,34 @@ function LootSpy_Slash(arg)
 		local fadeTime = tonumber(string.sub(arg,5));
 		if (fadeTime >= 0) then
 			LootSpy_Saved["fade"] = fadeTime;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_NEWFADE..fadeTime);
+			DEFAULT_CHAT_FRAME:AddMessage(LS_NEWFADE..fadeTime..LS_SECONDS);
 		else
 			DEFAULT_CHAT_FRAME:AddMessage(LS_FADEWRONG);
 		end
 	else
+		-- There has to be a better way to do this, feel free to fix :)
 		DEFAULT_CHAT_FRAME:AddMessage("LootSpy "..LOOTSPY_VERSION);
-		DEFAULT_CHAT_FRAME:AddMessage("--Usage:");
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle");
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls locked");
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls spam");
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls fade [time]");
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls compact");
+		if (LootSpy_Saved["on"] == true) then
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle -- |cFFFF0000disable|r LootSpy");
+		else
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle -- |cFF00FF00enable|r LootSpy");
+		end
+		if (LootSpy_Saved["locked"] == true) then
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls locked -- |cFF00FF00unlock|r LootSpy frame");
+		else
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls locked -- |cFFFF0000lock|r LootSpy frame");
+		end
+		if (LootSpy_Saved["hideSpam"] == true) then
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls spam -- |cFF00FF00show|r need/greed messages in chatframe");
+		else
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls spam -- |cFFFF0000hide|r need/greed messages from chatframe");
+		end
+		DEFAULT_CHAT_FRAME:AddMessage(" /ls fade [time] -- set fade time in seconds, currently |cFFFFFF00"..LootSpy_Saved["fade"].."|r seconds");
+		if (LootSpy_Saved["compact"] == true) then
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls compact -- |cFFFF0000disable|r compact mode");
+		else
+			DEFAULT_CHAT_FRAME:AddMessage(" /ls compact -- |cFF00FF00enable|r compact mode");
+		end
 	end
 end
 

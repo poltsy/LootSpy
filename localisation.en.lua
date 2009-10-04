@@ -4,16 +4,17 @@
 -- Updated: 21/11/06
 
 -- Slash Command Feedback
-LS_ENABLED		=	"LootSpy enabled.";
-LS_DISABLED		=	"LootSpy disabled.";
-LS_LOCKED		=	"LootSpy locked.";
-LS_UNLOCKED		=	"LootSpy unlocked.";
-LS_SPAMOFF		=	"LootSpy will display all loot information.";
-LS_SPAMON		=	"LootSpy will hide 'x has selected y for [Item]' messages.";
-LS_NEWFADE		=	"LootSpy frame fade set to: ";
-LS_FADEWRONG	=	"Error: Fade value should be 0 or a time in seconds.";
-LS_COMPACTON	=	"LootSpy now displaying in Compact mode.";
-LS_COMPACTOFF	=	"LootSpy now displaying in Full mode.";
+LS_ENABLED		=	"LootSpy |cFF00FF00enabled|r.";
+LS_DISABLED		=	"LootSpy |cFFFF0000disabled|r.";
+LS_LOCKED		=	"LootSpy |cFFFF0000locked|r.";
+LS_UNLOCKED		=	"LootSpy |cFF00FF00unlocked|r.";
+LS_SPAMOFF		=	"LootSpy need/greed spam |cFFFF0000disabled|r.";
+LS_SPAMON		=	"LootSpy need/greed spam |cFF00FF00enabled|r.";
+LS_NEWFADE		=	"LootSpy frame fade set to |cFFFFFF00";
+LS_FADEWRONG	=	"|cFFFF0000Error|r: Fade value should be 0 or a time in seconds.";
+LS_COMPACTON	=	"LootSpy compact mode |cFF00FF00enabled|r.";
+LS_COMPACTOFF	=	"LootSpy compact mode |cFFFF0000disabled|r.";
+LS_SECONDS	=	" |rseconds."
 
 -- Frame Text
 LS_NEED			=	"Need";
