@@ -6,11 +6,9 @@ LootSpy_ChatFrameEvent = ChatFrame_MessageEventHandler;
 
 LootSpySession = {}
 
-LOOTSPY_VERSION = "1.2.5"
+LOOTSPY_VERSION = "3.2.0"
 
 function LootSpy_Init()
-	--DEFAULT_CHAT_FRAME:AddMessage("LootSpy 1.2.1 loaded :: /ls for usage");
-		
 	for i = 1,5 do
 		getglobal("LootSpy_LootButton"..i):Hide();
 		getglobal("LootSpy_CompactLootButton"..i):Hide();
@@ -105,7 +103,6 @@ function LootSpy_Slash(arg)
 		end
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("LootSpy "..LOOTSPY_VERSION);
-		--DEFAULT_CHAT_FRAME:AddMessage("--By Tehl of Defias Brotherhood(EU)");
 		DEFAULT_CHAT_FRAME:AddMessage("--Usage:");
 		DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle");
 		DEFAULT_CHAT_FRAME:AddMessage(" /ls locked");
