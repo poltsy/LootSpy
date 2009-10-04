@@ -39,7 +39,7 @@ function LootSpy_Init()
 	LootSpy_CompactLootButton1:ClearAllPoints();
 	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 
-	if (LootSpy_Saved["locked"] == false) then
+	if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 		for i = 1,5 do
 			local buttonName = "nil";
 			if (LootSpy_Saved["compact"] == true) then
@@ -61,25 +61,44 @@ function LootSpy_Slash(arg)
 		if (LootSpy_Saved["on"] == true) then
 			LootSpy_Saved["on"] = false;
 			for i = 1,5 do
-				getglobal("LootSpy_LootButton"..i):Hide();
-			end
-			DEFAULT_CHAT_FRAME:AddMessage(LS_DISABLED);
-		else
-			LootSpy_Saved["on"] = true;
-			LootSpy_UpdateTable();
-			DEFAULT_CHAT_FRAME:AddMessage(LS_ENABLED);
-		end
-	elseif (arg == "locked") then
-		if (LootSpy_Saved["locked"] == true) then
-			LootSpy_Saved["locked"] = false;
-			for i = 1,5 do
 				local buttonName = "nil";
 				if (LootSpy_Saved["compact"] == true) then
 					buttonName = "LootSpy_CompactLootButton";
 				else
 					buttonName = "LootSpy_LootButton";
 				end
-				getglobal(buttonName..i):Show();
+				getglobal(buttonName..i):Hide();
+			end
+			DEFAULT_CHAT_FRAME:AddMessage(LS_DISABLED);
+		else
+			LootSpy_Saved["on"] = true;
+			LootSpy_UpdateTable();
+			DEFAULT_CHAT_FRAME:AddMessage(LS_ENABLED);
+			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
+				for i = 1,5 do
+					local buttonName = "nil";
+					if (LootSpy_Saved["compact"] == true) then
+						buttonName = "LootSpy_CompactLootButton";
+					else
+						buttonName = "LootSpy_LootButton";
+					end
+					getglobal(buttonName..i):Show();
+				end
+			end
+		end
+	elseif (arg == "locked") then
+		if (LootSpy_Saved["locked"] == true) then
+			LootSpy_Saved["locked"] = false;
+			if (LootSpy_Saved["on"] == true) then
+				for i = 1,5 do
+					local buttonName = "nil";
+					if (LootSpy_Saved["compact"] == true) then
+						buttonName = "LootSpy_CompactLootButton";
+					else
+						buttonName = "LootSpy_LootButton";
+					end
+					getglobal(buttonName..i):Show();
+				end
 			end
 			DEFAULT_CHAT_FRAME:AddMessage(LS_UNLOCKED);
 		else
@@ -100,7 +119,7 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["compact"] = false;
 			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTOFF);
 			LootSpy_UpdateTable();
-			if (LootSpy_Saved["locked"] == false) then
+			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
 					getglobal("LootSpy_LootButton"..i):Show();
 				end
@@ -109,7 +128,7 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["compact"] = true;
 			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTON);
 			LootSpy_UpdateTable();
-			if (LootSpy_Saved["locked"] == false) then
+			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
 					getglobal("LootSpy_CompactLootButton"..i):Show();
 				end
