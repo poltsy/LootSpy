@@ -349,7 +349,7 @@
 	<Frame name="LootSpy_Handler">
 		<Scripts>
 			<OnLoad>
-				this:RegisterEvent("VARIABLES_LOADED");
+				self:RegisterEvent("VARIABLES_LOADED");
 			</OnLoad>
 			<OnEvent>
 				LootSpy_OnEvent();
