@@ -323,10 +323,7 @@ function LootSpy_GetLootData(arg)
 end
 
 function ChatFrame_MessageEventHandler(self, event, ...)
-	if not (LootSpy_Saved) then
-		LootSpy_Init();
-	end
-	
+	if (LootSpy_Saved) then
 	if (LootSpy_Saved["on"] == true) and (LootSpy_IsALootMessage(arg1)) then
 		local itemName,playerName,rollType = LootSpy_GetLootData(arg1);
 		if (strfind(arg1,LS_ALLPASSED)) then
@@ -366,6 +363,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		if (LootSpy_Saved["hideSpam"] == true) then
 			return;
 		end
+	end
 	end
 	LootSpy_ChatFrameEvent(self, event, ...);
 end
