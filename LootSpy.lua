@@ -18,7 +18,7 @@ function LootSpy_Init()
 		LootSpy_Saved = {
 			["on"] = true,
 			["locked"] = false,
-			["hideSpam"] = false,
+			["hideSpam"] = true,
 			["coordX"] = LootSpy_LootButton1:GetLeft(),
 			["coordY"] = LootSpy_LootButton1:GetTop(),
 		};
