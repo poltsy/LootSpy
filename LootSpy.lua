@@ -41,7 +41,33 @@ end
 
 function LootSpyConfigFrame_OnLoad(panel)
 	panel.name = "LootSpy"
+	panel.default = LootSpy_SetDefaults;
 	InterfaceOptions_AddCategory(panel);
+end
+
+function LootSpy_SetDefaults()
+	if not (LootSpy_Saved) then return end
+	
+	if (LootSpy_Saved["on"] == false) then
+		LootSpy_Slash("toggle");
+	end
+	if (LootSpy_Saved["locked"] == true) then
+		LootSpy_Slash("locked");
+	end
+	if (LootSpy_Saved["hideSpam"] == false) then
+		LootSpy_Slash("spam");
+	end
+	if (LootSpy_Saved["compact"] == true) then
+		LootSpy_Slash("compact");
+	end
+	LootSpy_Saved["fade"] = 5;
+
+        LootSpyConfigFrameCheckButtonToggle:SetChecked( LootSpy_Saved["on"] );
+        LootSpyConfigFrameCheckButtonLocked:SetChecked( LootSpy_Saved["locked"] );
+        LootSpyConfigFrameCheckButtonSpam:SetChecked( LootSpy_Saved["hideSpam"] );  
+        LootSpyConfigFrameCheckButtonCompact:SetChecked( LootSpy_Saved["compact"] );
+        LootSpyConfigFrameEditBoxFade:SetText( LootSpy_Saved["fade"] );
+
 end
 
 function LootSpyConfigFrame_OnShow()
@@ -120,11 +146,11 @@ function LootSpy_Slash(arg)
 				end
 				getglobal(buttonName..i):Hide();
 			end
-			DEFAULT_CHAT_FRAME:AddMessage(LS_DISABLED);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_DISABLED);
 		else
 			LootSpy_Saved["on"] = true;
 			LootSpy_UpdateTable();
-			DEFAULT_CHAT_FRAME:AddMessage(LS_ENABLED);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_ENABLED);
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
 					local buttonName = "nil";
@@ -151,24 +177,24 @@ function LootSpy_Slash(arg)
 					getglobal(buttonName..i):Show();
 				end
 			end
-			DEFAULT_CHAT_FRAME:AddMessage(LS_UNLOCKED);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_UNLOCKED);
 		else
 			LootSpy_Saved["locked"] = true;
 			LootSpy_UpdateTable();
-			DEFAULT_CHAT_FRAME:AddMessage(LS_LOCKED);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_LOCKED);
 		end
 	elseif (arg == "spam") then
 		if (LootSpy_Saved["hideSpam"] == true) then
 			LootSpy_Saved["hideSpam"] = false;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMOFF);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMOFF);
 		else
 			LootSpy_Saved["hideSpam"] = true;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMON);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMON);
 		end
 	elseif (arg == "compact") then
 		if (LootSpy_Saved["compact"] == true) then
 			LootSpy_Saved["compact"] = false;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTOFF);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTOFF);
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
@@ -177,7 +203,7 @@ function LootSpy_Slash(arg)
 			end
 		else
 			LootSpy_Saved["compact"] = true;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTON);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTON);
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
@@ -189,7 +215,7 @@ function LootSpy_Slash(arg)
 		local fadeTime = tonumber(string.sub(arg,5));
 		if (fadeTime >= 0) then
 			LootSpy_Saved["fade"] = fadeTime;
-			DEFAULT_CHAT_FRAME:AddMessage(LS_NEWFADE..fadeTime..LS_SECONDS);
+--			DEFAULT_CHAT_FRAME:AddMessage(LS_NEWFADE..fadeTime..LS_SECONDS);
 		else
 			DEFAULT_CHAT_FRAME:AddMessage(LS_FADEWRONG);
 		end
@@ -226,7 +252,7 @@ function LootSpy_OnEvent()
 	end
 end
 
-function LootSpy_OnUpdate(self)
+function LootSpy_OnUpdate()
 	local i = 1;
 	for item in pairs(LootSpySession) do
 		if (LootSpySession[item]["timeWon"] > 0) and (LootSpy_Saved["fade"] > 0) then
