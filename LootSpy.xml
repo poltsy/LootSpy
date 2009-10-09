@@ -346,6 +346,131 @@
 		</Scripts>
 	</Frame>
 	
+	<Frame name="LootSpyConfigFrame"
+	    toplevel="true" parent="UIParent" frameStrata="DIALOG"
+	    hidden="true" enableMouse="true">
+		<Size><AbsDimension x="360" y="240"/></Size>
+		<Anchors><Anchor point="CENTER"/></Anchors>
+
+		<Frames>
+
+		<CheckButton name="$parentCheckButtonToggle" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset><AbsDimension x="14" y="-80"/></Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFLootSpy enabled|r"); </OnLoad>
+				<OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
+			</Scripts>
+		</CheckButton>
+
+                <CheckButton name="$parentCheckButtonLocked" inherits="OptionsCheckButtonTemplate">
+                        <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="$parentCheckButtonToggle">
+                                <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
+                        </Anchors>
+                        <Scripts>
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFLock LootSpy frame|r"); </OnLoad>
+                                <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
+                        </Scripts>
+                </CheckButton>
+
+                <CheckButton name="$parentCheckButtonSpam" inherits="OptionsCheckButtonTemplate">
+                        <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="$parentCheckButtonLocked">
+                                <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
+                        </Anchors>
+                        <Scripts> 
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFHide need/greed spam from the chat frame|r"); </OnLoad>
+                                <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
+                        </Scripts>
+                </CheckButton>
+
+                <CheckButton name="$parentCheckButtonCompact" inherits="OptionsCheckButtonTemplate">
+                        <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="$parentCheckButtonSpam">
+                                <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
+                        </Anchors>
+                        <Scripts> 
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFEnable compact mode|r"); </OnLoad>
+                                <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
+                        </Scripts>
+                </CheckButton>
+
+		<EditBox name="$parentEditBoxFade" letters="2" numeric="true" inherits="InputBoxTemplate">
+			<Size><AbsDimension x="32" y="16"/></Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parentCheckButtonCompact">
+				<Offset><AbsDimension x="8" y="-34"/></Offset> 
+				</Anchor>
+			</Anchors>
+			<Scripts>
+                                <OnLoad> this:SetAutoFocus(false); </OnLoad>
+				<OnEnterPressed>
+					LootSpyConfigFrame_OnEnterPressed(self);
+					this:ClearFocus();
+				</OnEnterPressed>
+				<OnEscapePressed>
+					LootSpyConfigFrame_OnEscapePressed(self);
+					this:ClearFocus();
+				</OnEscapePressed>
+                        </Scripts>
+		</EditBox>
+		</Frames>
+	
+		<Layers>
+
+
+			<Layer level="OVERLAY">
+				<FontString name="$parentVersionFontString" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-12" y="12"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+
+                                <FontString name="$parentTitleFontString" inherits="GameFontNormal" text="">
+                                        <Anchors>
+                                                <Anchor point="TOPLEFT">
+                                                <Offset><AbsDimension x="16" y="-16"/></Offset>
+                                                </Anchor>
+                                        </Anchors>
+                                </FontString>
+                                
+                                <FontString name="$parentFadeFontString" inherits="GameFontNormal" text="|cFFFFFFFFFade time in seconds|r">
+                                        <Anchors>
+                                                <Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset><AbsDimension x="60" y="-219"/></Offset>
+						</Anchor>
+                                        </Anchors>
+                                </FontString>
+
+                                <FontString name="$parentDescFontString" inherits="GameFontNormal" text="">
+                                        <Anchors>
+                                                <Anchor point="TOPLEFT" relativeTo="$parent">
+                                                <Offset><AbsDimension x="16" y="-40"/></Offset>
+                                                </Anchor>
+                                        </Anchors>
+                                </FontString>
+
+			</Layer>
+
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				LootSpyConfigFrame_OnLoad(self);
+			</OnLoad>
+			<OnShow>
+				LootSpyConfigFrame_OnShow();
+			</OnShow>
+		</Scripts>
+	</Frame>
+
 	<Frame name="LootSpy_Handler">
 		<Scripts>
 			<OnLoad>

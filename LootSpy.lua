@@ -8,6 +8,57 @@ LootSpySession = {}
 
 LOOTSPY_VERSION = "3.2.0"
 
+function LootSpyConfigFrame_OnEscapePressed(self)
+	if not (LootSpy_Saved) then return end
+
+	self:SetText( LootSpy_Saved["fade"] );
+end
+
+function LootSpyConfigFrame_OnEnterPressed(self)
+	if not (LootSpy_Saved) then return end
+
+	local fadeTime = self:GetNumber()
+	if ( fadeTime >= 0 ) then
+		LootSpy_Saved["fade"] = fadeTime;
+	end
+end
+
+function LootSpyConfigFrame_OnClick(self)
+	if not (LootSpy_Saved) then return end
+
+	-- I'm lazy so I'll just reuse the already existing slash function instead of
+	if ( self:GetName() == (this:GetParent():GetName().."CheckButtonToggle") ) then
+		setting = "toggle"
+	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonLocked") ) then
+		setting = "locked"
+	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonSpam") ) then
+		setting = "spam"
+	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonCompact") ) then
+		setting = "compact"
+	end
+	LootSpy_Slash(setting);
+end
+
+function LootSpyConfigFrame_OnLoad(panel)
+	panel.name = "LootSpy"
+	InterfaceOptions_AddCategory(panel);
+end
+
+function LootSpyConfigFrame_OnShow()
+	if not (LootSpy_Saved) then return end
+	
+	getglobal(this:GetName().."CheckButtonToggle"):SetChecked( LootSpy_Saved["on"] );
+	getglobal(this:GetName().."CheckButtonLocked"):SetChecked( LootSpy_Saved["locked"] );
+	getglobal(this:GetName().."CheckButtonSpam"):SetChecked( LootSpy_Saved["hideSpam"] );
+	getglobal(this:GetName().."CheckButtonCompact"):SetChecked( LootSpy_Saved["compact"] );
+	getglobal(this:GetName().."EditBoxFade"):SetText( LootSpy_Saved["fade"] );
+	getglobal(this:GetName().."TitleFontString"):SetFont("Fonts\\FRIZQT__.TTF", 16);
+	getglobal(this:GetName().."TitleFontString"):SetText("LootSpy");
+	getglobal(this:GetName().."DescFontString"):SetFont("Fonts\\FRIZQT__.TTF", 10);
+	getglobal(this:GetName().."DescFontString"):SetText("|cFFFFFFFFThese options allow you to customize how LootSpy behaves.|r");
+	getglobal(this:GetName().."VersionFontString"):SetText("LootSpy "..LOOTSPY_VERSION);
+end	
+
 function LootSpy_Init()
 	for i = 1,5 do
 		getglobal("LootSpy_LootButton"..i):Hide();
