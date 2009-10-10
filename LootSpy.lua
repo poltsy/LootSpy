@@ -26,7 +26,7 @@ end
 function LootSpyConfigFrame_OnClick(self)
 	if not (LootSpy_Saved) then return end
 
-	-- I'm lazy so I'll just reuse the already existing slash function instead of
+	-- I'm lazy so I'll just reuse the already existing slash function
 	if ( self:GetName() == (this:GetParent():GetName().."CheckButtonToggle") ) then
 		setting = "toggle"
 	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonLocked") ) then
@@ -46,6 +46,7 @@ function LootSpyConfigFrame_OnLoad(panel)
 end
 
 function LootSpy_SetDefaults()
+	-- check each setting and toggle switch if not default
 	if not (LootSpy_Saved) then return end
 	
 	if (LootSpy_Saved["on"] == false) then
@@ -60,24 +61,38 @@ function LootSpy_SetDefaults()
 	if (LootSpy_Saved["compact"] == true) then
 		LootSpy_Slash("compact");
 	end
-	LootSpy_Saved["fade"] = 5;
 
+	-- reset back to the center of the screen
+        LootSpy_LootButton1:ClearAllPoints();
+	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","CENTER");
+        LootSpy_CompactLootButton1:ClearAllPoints();
+        LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","CENTER");
+
+	LootSpy_Saved["fade"] = 5;
+	LootSpy_Saved["coordX"] = LootSpy_LootButton1:GetLeft();
+	LootSpy_Saved["coordY"] = LootSpy_LootButton1:GetTop();
+
+        LootSpy_LootButton1:ClearAllPoints();
+        LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
+        LootSpy_CompactLootButton1:ClearAllPoints();
+        LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
+
+	-- update the settings frame to reflect any changes made to config
+	LootSpyConfigFrame_SetSettings();
+end
+
+function LootSpyConfigFrame_SetSettings()
         LootSpyConfigFrameCheckButtonToggle:SetChecked( LootSpy_Saved["on"] );
-        LootSpyConfigFrameCheckButtonLocked:SetChecked( LootSpy_Saved["locked"] );
+        LootSpyConfigFrameCheckButtonLocked:SetChecked( LootSpy_Saved["locked"] );  
         LootSpyConfigFrameCheckButtonSpam:SetChecked( LootSpy_Saved["hideSpam"] );  
         LootSpyConfigFrameCheckButtonCompact:SetChecked( LootSpy_Saved["compact"] );
         LootSpyConfigFrameEditBoxFade:SetText( LootSpy_Saved["fade"] );
-
 end
 
 function LootSpyConfigFrame_OnShow()
 	if not (LootSpy_Saved) then return end
-	
-	getglobal(this:GetName().."CheckButtonToggle"):SetChecked( LootSpy_Saved["on"] );
-	getglobal(this:GetName().."CheckButtonLocked"):SetChecked( LootSpy_Saved["locked"] );
-	getglobal(this:GetName().."CheckButtonSpam"):SetChecked( LootSpy_Saved["hideSpam"] );
-	getglobal(this:GetName().."CheckButtonCompact"):SetChecked( LootSpy_Saved["compact"] );
-	getglobal(this:GetName().."EditBoxFade"):SetText( LootSpy_Saved["fade"] );
+
+	LootSpyConfigFrame_SetSettings();
 	getglobal(this:GetName().."TitleFontString"):SetFont("Fonts\\FRIZQT__.TTF", 16);
 	getglobal(this:GetName().."TitleFontString"):SetText("LootSpy");
 	getglobal(this:GetName().."DescFontString"):SetFont("Fonts\\FRIZQT__.TTF", 10);
@@ -146,11 +161,9 @@ function LootSpy_Slash(arg)
 				end
 				getglobal(buttonName..i):Hide();
 			end
---			DEFAULT_CHAT_FRAME:AddMessage(LS_DISABLED);
 		else
 			LootSpy_Saved["on"] = true;
 			LootSpy_UpdateTable();
---			DEFAULT_CHAT_FRAME:AddMessage(LS_ENABLED);
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
 					local buttonName = "nil";
@@ -177,24 +190,19 @@ function LootSpy_Slash(arg)
 					getglobal(buttonName..i):Show();
 				end
 			end
---			DEFAULT_CHAT_FRAME:AddMessage(LS_UNLOCKED);
 		else
 			LootSpy_Saved["locked"] = true;
 			LootSpy_UpdateTable();
---			DEFAULT_CHAT_FRAME:AddMessage(LS_LOCKED);
 		end
 	elseif (arg == "spam") then
 		if (LootSpy_Saved["hideSpam"] == true) then
 			LootSpy_Saved["hideSpam"] = false;
---			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMOFF);
 		else
 			LootSpy_Saved["hideSpam"] = true;
---			DEFAULT_CHAT_FRAME:AddMessage(LS_SPAMON);
 		end
 	elseif (arg == "compact") then
 		if (LootSpy_Saved["compact"] == true) then
 			LootSpy_Saved["compact"] = false;
---			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTOFF);
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
@@ -203,7 +211,6 @@ function LootSpy_Slash(arg)
 			end
 		else
 			LootSpy_Saved["compact"] = true;
---			DEFAULT_CHAT_FRAME:AddMessage(LS_COMPACTON);
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
 				for i = 1,5 do
@@ -215,33 +222,14 @@ function LootSpy_Slash(arg)
 		local fadeTime = tonumber(string.sub(arg,5));
 		if (fadeTime >= 0) then
 			LootSpy_Saved["fade"] = fadeTime;
---			DEFAULT_CHAT_FRAME:AddMessage(LS_NEWFADE..fadeTime..LS_SECONDS);
 		else
 			DEFAULT_CHAT_FRAME:AddMessage(LS_FADEWRONG);
 		end
 	else
-		-- There has to be a better way to do this, feel free to fix :)
-		DEFAULT_CHAT_FRAME:AddMessage("LootSpy "..LOOTSPY_VERSION);
-		if (LootSpy_Saved["on"] == true) then
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle -- |cFFFF0000disable|r LootSpy");
+	        if InterfaceOptionsFrame:IsVisible() then
+			InterfaceOptionsFrame:Hide();
 		else
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls toggle -- |cFF00FF00enable|r LootSpy");
-		end
-		if (LootSpy_Saved["locked"] == true) then
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls locked -- |cFF00FF00unlock|r LootSpy frame");
-		else
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls locked -- |cFFFF0000lock|r LootSpy frame");
-		end
-		if (LootSpy_Saved["hideSpam"] == true) then
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls spam -- |cFF00FF00show|r need/greed messages in chatframe");
-		else
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls spam -- |cFFFF0000hide|r need/greed messages from chatframe");
-		end
-		DEFAULT_CHAT_FRAME:AddMessage(" /ls fade [time] -- set fade time in seconds, currently |cFFFFFF00"..LootSpy_Saved["fade"].."|r seconds");
-		if (LootSpy_Saved["compact"] == true) then
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls compact -- |cFFFF0000disable|r compact mode");
-		else
-			DEFAULT_CHAT_FRAME:AddMessage(" /ls compact -- |cFF00FF00enable|r compact mode");
+			InterfaceOptionsFrame_OpenToCategory("LootSpy");
 		end
 	end
 end
