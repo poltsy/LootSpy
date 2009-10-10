@@ -6,7 +6,7 @@ LootSpy_ChatFrameEvent = ChatFrame_MessageEventHandler;
 
 LootSpySession = {}
 
-LOOTSPY_VERSION = "3.2.0"
+LOOTSPY_VERSION = "3.2.1"
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
