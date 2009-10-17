@@ -96,16 +96,16 @@ function LootSpyConfigFrame_OnShow()
 	getglobal(this:GetName().."TitleFontString"):SetFont("Fonts\\FRIZQT__.TTF", 16);
 	getglobal(this:GetName().."TitleFontString"):SetText("LootSpy");
 	getglobal(this:GetName().."DescFontString"):SetFont("Fonts\\FRIZQT__.TTF", 10);
-	getglobal(this:GetName().."DescFontString"):SetText("|cFFFFFFFFThese options allow you to customize how LootSpy behaves.|r");
+	getglobal(this:GetName().."DescFontString"):SetText("|cFFFFFFFF"..LS_DESCTEXT.."|r");
 	getglobal(this:GetName().."VersionFontString"):SetText("LootSpy "..LOOTSPY_VERSION);
-end	
+end
 
 function LootSpy_Init()
 	for i = 1,5 do
 		getglobal("LootSpy_LootButton"..i):Hide();
 		getglobal("LootSpy_CompactLootButton"..i):Hide();
 	end
-	
+
 	if not (LootSpy_Saved) then
 		LootSpy_Saved = {
 			["on"] = true,

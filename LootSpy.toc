@@ -3,7 +3,7 @@
 ## Notes: Watches Need/Greed rolls on loot
 ## SavedVariables: LootSpy_Saved
 LootSpy.lua
-LootSpy.xml
 localisation.en.lua
 localisation.de.lua
 localisation.fr.lua
+LootSpy.xml

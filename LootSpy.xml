@@ -361,7 +361,7 @@
 				</Anchor>
 			</Anchors>
 			<Scripts>
-				<OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFLootSpy enabled|r"); </OnLoad>
+				<OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BENABLED.."|r"); </OnLoad>
 				<OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
 			</Scripts>
 		</CheckButton>
@@ -372,7 +372,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts>
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFLock LootSpy frame|r"); </OnLoad>
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BLOCKED.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>
@@ -383,7 +383,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts> 
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFHide need/greed spam from the chat frame|r"); </OnLoad>
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BHIDESPAM.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>
@@ -394,7 +394,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts> 
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFFEnable compact mode|r"); </OnLoad>
+                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BCOMPACT.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>

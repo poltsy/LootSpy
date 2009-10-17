@@ -14,6 +14,13 @@ LS_GREED	=	"Cupidité";
 LS_PASSED	=	"Passé";
 LS_NEEDERS	=	"Besoin:";
 
+-- Config Frame
+LS_DESCTEXT	=	"These options allow you to customize how LootSpy behaves.";
+LS_BENABLED	=	"LootSpy enabled";
+LS_BLOCKED	=	"Lock LootSpy frame";
+LS_BHIDESPAM	=	"Hide need/greed spam from the chat frame";
+LS_BCOMPACT	=	"Enable compact mode";
+
 -- Chat String Identification
 LS_NEEDSTRING	=	"choisi Besoin pour";
 LS_GREEDSTRING	=	"choisi Cupidité pour";
