@@ -474,10 +474,10 @@
 	<Frame name="LootSpy_Handler">
 		<Scripts>
 			<OnLoad>
-				self:RegisterEvent("VARIABLES_LOADED");
+				self:RegisterEvent("ADDON_LOADED");
 			</OnLoad>
 			<OnEvent>
-				LootSpy_OnEvent();
+				LootSpy_OnEvent(self, event, ...);
 			</OnEvent>
 			<OnUpdate>
 				LootSpy_OnUpdate();

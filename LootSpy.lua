@@ -1,12 +1,10 @@
--- LootSpy
--- Tehl of Defias Brotherhood(EU)
--- Props to Yrys (Author of ChatLink) for wading through the nightmare that is Regex, mine is lifted directly from his addon.
+-- Originally by Tehl of Defias Brotherhood(EU)
 
-LootSpy_ChatFrameEvent = ChatFrame_MessageEventHandler;
+local THREETHREE = select(4, GetBuildInfo()) >= 30300
 
 LootSpySession = {}
 
-LOOTSPY_VERSION = "3.2.2"
+LOOTSPY_VERSION = "3.3.0"
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -48,7 +46,7 @@ end
 function LootSpy_SetDefaults()
 	-- check each setting and toggle switch if not default
 	if not (LootSpy_Saved) then return end
-	
+
 	if (LootSpy_Saved["on"] == false) then
 		LootSpy_Slash("toggle");
 	end
@@ -63,30 +61,29 @@ function LootSpy_SetDefaults()
 	end
 
 	-- reset back to the center of the screen
-        LootSpy_LootButton1:ClearAllPoints();
+	LootSpy_LootButton1:ClearAllPoints();
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","CENTER");
-        LootSpy_CompactLootButton1:ClearAllPoints();
-        LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","CENTER");
+	LootSpy_CompactLootButton1:ClearAllPoints();
+	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","CENTER");
 
 	LootSpy_Saved["fade"] = 5;
 	LootSpy_Saved["coordX"] = LootSpy_LootButton1:GetLeft();
 	LootSpy_Saved["coordY"] = LootSpy_LootButton1:GetTop();
-
-        LootSpy_LootButton1:ClearAllPoints();
-        LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
-        LootSpy_CompactLootButton1:ClearAllPoints();
-        LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
+	LootSpy_LootButton1:ClearAllPoints();
+	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
+	LootSpy_CompactLootButton1:ClearAllPoints();
+	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 
 	-- update the settings frame to reflect any changes made to config
 	LootSpyConfigFrame_SetSettings();
 end
 
 function LootSpyConfigFrame_SetSettings()
-        LootSpyConfigFrameCheckButtonToggle:SetChecked( LootSpy_Saved["on"] );
-        LootSpyConfigFrameCheckButtonLocked:SetChecked( LootSpy_Saved["locked"] );  
-        LootSpyConfigFrameCheckButtonSpam:SetChecked( LootSpy_Saved["hideSpam"] );  
-        LootSpyConfigFrameCheckButtonCompact:SetChecked( LootSpy_Saved["compact"] );
-        LootSpyConfigFrameEditBoxFade:SetText( LootSpy_Saved["fade"] );
+	LootSpyConfigFrameCheckButtonToggle:SetChecked( LootSpy_Saved["on"] );
+	LootSpyConfigFrameCheckButtonLocked:SetChecked( LootSpy_Saved["locked"] );
+	LootSpyConfigFrameCheckButtonSpam:SetChecked( LootSpy_Saved["hideSpam"] );
+	LootSpyConfigFrameCheckButtonCompact:SetChecked( LootSpy_Saved["compact"] );
+	LootSpyConfigFrameEditBoxFade:SetText( LootSpy_Saved["fade"] );
 end
 
 function LootSpyConfigFrame_OnShow()
@@ -100,7 +97,7 @@ function LootSpyConfigFrame_OnShow()
 	getglobal(this:GetName().."VersionFontString"):SetText("LootSpy "..LOOTSPY_VERSION);
 end
 
-function LootSpy_Init()
+function LootSpy_Init(self)
 	for i = 1,5 do
 		getglobal("LootSpy_LootButton"..i):Hide();
 		getglobal("LootSpy_CompactLootButton"..i):Hide();
@@ -115,7 +112,7 @@ function LootSpy_Init()
 			["coordY"] = LootSpy_LootButton1:GetTop(),
 		};
 	end
-	
+
 	if not (LootSpy_Saved["fade"]) then
 		LootSpy_Saved["fade"] = 5;
 	end
@@ -123,9 +120,9 @@ function LootSpy_Init()
 	if not (LootSpy_Saved["compact"]) then
 		LootSpy_Saved["compact"] = 0;
 	end
-	
+
 	LootSpySession = {};
-	
+
 	LootSpy_LootButton1:ClearAllPoints();
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 	LootSpy_CompactLootButton1:ClearAllPoints();
@@ -141,6 +138,15 @@ function LootSpy_Init()
 			end
 			getglobal(buttonName..i):Show();
 		end
+	end
+
+	if (LootSpy_Saved["on"] == true) then -- don't listen if we don't care
+		self:RegisterEvent("START_LOOT_ROLL")
+		self:RegisterEvent("CHAT_MSG_LOOT")
+	end
+
+	if (LootSpy_Saved["on"] == true) and (LootSpy_Saved["hideSpam"] == true) then
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 	end
 
 	SLASH_LOOTSPY1 = "/lootspy";
@@ -161,6 +167,8 @@ function LootSpy_Slash(arg)
 				end
 				getglobal(buttonName..i):Hide();
 			end
+			this:UnregisterEvent("START_LOOT_ROLL")
+			this:UnregisterEvent("CHAT_MSG_LOOT")
 		else
 			LootSpy_Saved["on"] = true;
 			LootSpy_UpdateTable();
@@ -174,6 +182,8 @@ function LootSpy_Slash(arg)
 					end
 					getglobal(buttonName..i):Show();
 				end
+			this:RegisterEvent("START_LOOT_ROLL")
+			this:RegisterEvent("CHAT_MSG_LOOT")
 			end
 		end
 	elseif (arg == "locked") then
@@ -197,8 +207,10 @@ function LootSpy_Slash(arg)
 	elseif (arg == "spam") then
 		if (LootSpy_Saved["hideSpam"] == true) then
 			LootSpy_Saved["hideSpam"] = false;
+			ChatFrame_RemoveMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 		else
 			LootSpy_Saved["hideSpam"] = true;
+			ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 		end
 	elseif (arg == "compact") then
 		if (LootSpy_Saved["compact"] == true) then
@@ -234,9 +246,17 @@ function LootSpy_Slash(arg)
 	end
 end
 
-function LootSpy_OnEvent()
-	if (event == "VARIABLES_LOADED") then
-		LootSpy_Init();
+function LootSpy_OnEvent(self, event, ...)
+	local addon = ... or "n/a"
+
+	if event == "ADDON_LOADED" then
+	  if addon ~= "LootSpy" then return end -- this is not the addon you're looking for
+	  self:UnregisterEvent("ADDON_LOADED")
+	  LootSpy_Init(self)
+	elseif event == "START_LOOT_ROLL" then
+	  LootSpy_START_LOOT_ROLL(...)
+	elseif event == "CHAT_MSG_LOOT" then
+	  LootSpy_CHAT_MSG_LOOT(...)
 	end
 end
 
@@ -282,15 +302,11 @@ function LootSpy_UpdateTable()
 		if (LootSpy_Saved["compact"] == true) then
 			getglobal(buttonName..i.."Text"):SetText("N:"..LootSpySession[item]["need"].." G:"..LootSpySession[item]["greed"].." P:"..LootSpySession[item]["passed"]);
 		else
-			getglobal(buttonName..i.."NeedText"):SetText(LS_NEED..": "..LootSpySession[item]["need"]);
-			getglobal(buttonName..i.."GreedText"):SetText(LS_GREED..": "..LootSpySession[item]["greed"]);
-			getglobal(buttonName..i.."PassedText"):SetText(LS_PASSED..": "..LootSpySession[item]["passed"]);
+			getglobal(buttonName..i.."NeedText"):SetText(NEED..": "..LootSpySession[item]["need"]);
+			getglobal(buttonName..i.."GreedText"):SetText(GREED..": "..LootSpySession[item]["greed"]);
+			getglobal(buttonName..i.."PassedText"):SetText(PASS..": "..LootSpySession[item]["passed"]);
 		end
-		itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
-		local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink);
-		if (itemTexture) then
-			getglobal(buttonName..i.."ItemIcon"):SetTexture(itemTexture);
-		end
+		getglobal(buttonName..i.."ItemIcon"):SetTexture(LootSpySession[item]["icon"]);
 		i = i + 1;
 		if (i > 5) then
 			return;
@@ -307,7 +323,7 @@ function LootSpy_Tooltip(id)
 			name = item;
 		end
 	end
-	GameTooltip:SetText(name);
+	GameTooltip:SetText(LootSpySession[name]["name"]);
 	GameTooltip:AddLine(LS_NEEDERS);
 	for player in pairs(LootSpySession[name]["needNames"]) do
 		GameTooltip:AddLine(LootSpySession[name]["needNames"][player]);
@@ -321,11 +337,11 @@ function LootSpy_ItemTooltip(id)
 	for item in pairs(LootSpySession) do
 		id = id - 1;
 		if (id == 0) then
-			itemLink = string.gsub(item, "|c(%x+)|Hitem:(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-):(%d-)|h%[([^%]]-)%]|h|r", "%2");
+			itemLink = LootSpySession[item]["link"];
 		end
 	end
 	GameTooltip:ClearLines();
-	GameTooltip:SetHyperlink("item:"..itemLink..":0:0:0:0:0:0:0:0");
+	GameTooltip:SetHyperlink(itemLink);
 	GameTooltip:Show();
 end
 
@@ -362,73 +378,148 @@ function LootSpy_UpdatePosition()
 	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 end
 
-function LootSpy_IsALootMessage(arg)
-	if (arg) then
-		if (strfind(arg,LS_NEEDSTRING) or strfind(arg,LS_GREEDSTRING) or strfind(arg,LS_PASSEDSTRING)) or strfind(arg,LS_ITEMWON1) or strfind(arg,LS_ITEMWON2) then
-			return true;
-		end
-	end
-	return false;
+function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifted from RollWatcher
+	local pattern = string.gsub(fmt, "(%%s)", "(.+)")
+	local _, _, a1, a2 = string.find(msg, pattern)
+	return a1, a2, pattern
 end
 
-function LootSpy_GetLootData(arg)
-	arg = string.gsub(arg," has selected ",":");
-	arg = string.gsub(arg," have selected ",":");
-	arg = string.gsub(arg," has won: ",":|");
-	arg = string.gsub(arg," won: ",":|");
-	arg = string.gsub(arg," for: ","|");
-	arg = string.gsub(arg," has ",":");
-	arg = string.gsub(arg," have ",":");
-	arg = string.gsub(arg," on: ","|");
-	arg = string.gsub(arg,"You",UnitName("player"));
-	local playerName = string.sub(arg,1,strfind(arg,":")-1);
-	local itemName = string.sub(arg,strfind(arg,"|")+1,string.len(arg));
-	local rollType = string.sub(arg,strfind(arg,":")+1,strfind(arg,"|")-1);
-	return itemName,playerName,rollType;
+function LootSpy_START_LOOT_ROLL(rollid)
+	if not (LootSpy_Saved) then return end
+	
+	if (LootSpy_Saved["on"] == true) then
+	  local texture, itemName = GetLootRollItemInfo(rollid)
+	  local itemLink = GetLootRollItemLink(rollid)
+	  LootSpySession[rollid] = {
+	  	["name"] = itemName,
+	  	["icon"] = texture,
+	  	["link"] = itemLink,
+	  	["need"] = 0,
+	  	["needNames"] = {},
+	  	["greed"] = 0,
+	  	["passed"] = 0,
+	  	["timeWon"] = 0
+	  };
+	end
 end
 
-function ChatFrame_MessageEventHandler(self, event, ...)
-	if (LootSpy_Saved) then
-	if (LootSpy_Saved["on"] == true) and (LootSpy_IsALootMessage(arg1)) then
-		local itemName,playerName,rollType = LootSpy_GetLootData(arg1);
-		if (strfind(arg1,LS_ALLPASSED)) then
-			LootSpySession[itemName]["timeWon"] = GetTime();
-			LootSpy_ChatFrameEvent(self, event, ...);
-			return;
+function LootSpy_SaveRoll(itemLink, rollType, playerName)
+	for rollid in pairs(LootSpySession) do
+	  if LootSpySession[rollid]["link"] == itemLink then
+		if (rollType == "end") then
+		  LootSpySession[rollid]["timeWon"] = GetTime()
+		elseif (rollType == "need") then
+		  local i = 1;
+		  while (LootSpySession[rollid]["needNames"][i]) do
+			i = i + 1
+		  end
+		  LootSpySession[rollid]["needNames"][i] = playerName
+		  LootSpySession[rollid]["need"] = LootSpySession[rollid]["need"] + 1
+		elseif (rollType == "greed") then
+		  LootSpySession[rollid]["greed"] = LootSpySession[rollid]["greed"] + 1
+		elseif (rollType == "pass") then
+		  LootSpySession[rollid]["passed"] = LootSpySession[rollid]["passed"] + 1
 		end
-		if (strfind(arg1,LS_ITEMWON1) or strfind(arg1,LS_ITEMWON2)) then
-			if (LootSpySession[itemName]) then
-				LootSpySession[itemName]["timeWon"] = GetTime();
-			end
-			LootSpy_ChatFrameEvent(self, event, ...);
-			return;
-		end
-		if not (LootSpySession[itemName]) then
-			LootSpySession[itemName] = {
-				["need"] = 0,
-				["needNames"] = {},
-				["greed"] = 0,
-				["passed"] = 0,
-				["timeWon"] = 0
-			};
-		end
-		if (rollType == LS_NEED) then
-			local i = 1;
-			while (LootSpySession[itemName]["needNames"][i]) do
-				i = i + 1;
-			end
-			LootSpySession[itemName]["needNames"][i] = playerName;
-			LootSpySession[itemName]["need"] = LootSpySession[itemName]["need"] + 1;
-		elseif (rollType == LS_GREED) then
-			LootSpySession[itemName]["greed"] = LootSpySession[itemName]["greed"] + 1;
-		else
-			LootSpySession[itemName]["passed"] = LootSpySession[itemName]["passed"] + 1;
-		end
-		LootSpy_UpdateTable();
-		if (LootSpy_Saved["hideSpam"] == true) then
-			return;
-		end
+	  end
 	end
+	LootSpy_UpdateTable()
+end
+
+function LootSpy_CHAT_MSG_LOOT(msg)
+	if not (LootSpy_Saved) then return end
+
+	if (LootSpy_Saved["on"] == true) then
+	  local item, name
+	  local i = UnitName("player")
+
+	  item = LootSpy_unformat(LOOT_ROLL_YOU_WON, msg)
+	  if item then LootSpy_SaveRoll(item, "end", i) return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_WON, msg)
+	  if name then LootSpy_SaveRoll(item, "end", name) return end
+
+	  item = LootSpy_unformat(LOOT_ROLL_ALL_PASSED, msg)
+	  if item then LootSpy_SaveRoll(item, "end") return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO, msg)
+	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO_FEMALE, msg)
+	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+
+	  item = LootSpy_unformat(LOOT_ROLL_NEED_SELF, msg)
+	  if item then LootSpy_SaveRoll(item, "need", i) return end
+
+	  item = LootSpy_unformat(LOOT_ROLL_GREED_SELF, msg)
+	  if item then LootSpy_SaveRoll(item, "greed", i) return end
+
+	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF, msg)
+	  if link then LootSpy_SaveRoll(item, "pass", i) return end
+
+	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
+	  if link then LootSpy_SaveRoll(item, "pass", i) return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_NEED, msg)
+	  if name then LootSpy_SaveRoll(item, "need", name) return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_GREED, msg)
+	  if name then LootSpy_SaveRoll(item, "greed", name) return end
+
+	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED, msg)
+	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+
+	  if THREETHREE then -- to be added in 3.3
+		name, item = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+		if name then LootSpy_SaveRoll(item, "greed", name) return end
+
+		item = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+		if item then LootSpy_SaveRoll(item, "greed", i) return end
+	  end
+        end
+end
+
+function LootSpy_ChatFilter(self, event, msg)
+
+	-- insert magic to mangle the pattern to something we can match against
+	-- I feel sick looking at this stuff
+	local pattern, pattern2
+	_, _, pattern2 = LootSpy_unformat(LOOT_ROLL_ALL_PASSED, msg)
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_GREED, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_GREED_SELF, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED_SELF, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED, msg)
+	if msg:match(pattern) and not msg:match(pattern2) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO_FEMALE, msg)
+	if msg:match(pattern) then return true end
+
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_SELF, msg)
+	if msg:match(pattern) and not msg:match(pattern2) then return true end
+
+	_,_, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
+	if msg:match(LOOT_ROLL_PASSED_SELF_AUTO) then return true end
+
+	if THREETHREE then
+		_,_, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+		if msg:match(pattern) then return true end
+
+		_,_, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+		if msg:match(pattern) then return true end
 	end
-	LootSpy_ChatFrameEvent(self, event, ...);
 end
