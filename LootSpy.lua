@@ -326,7 +326,9 @@ function LootSpy_Tooltip(id)
 	GameTooltip:SetText(LootSpySession[name]["name"]);
 	GameTooltip:AddLine(LS_NEEDERS);
 	for player in pairs(LootSpySession[name]["needNames"]) do
-		GameTooltip:AddLine(LootSpySession[name]["needNames"][player]);
+		if (LootSpySession[name]["needNames"][player]) then -- maybe redundant, check later
+		   GameTooltip:AddLine(LootSpySession[name]["needNames"][player]) 
+		end
 	end
 	GameTooltip:Show();
 end
@@ -372,7 +374,7 @@ function LootSpy_UpdatePosition()
 	end
 	LootSpy_Saved["coordX"] = getglobal(buttonName.."1"):GetLeft();
 	LootSpy_Saved["coordY"] = getglobal(buttonName.."1"):GetTop();
-		LootSpy_LootButton1:ClearAllPoints();
+	LootSpy_LootButton1:ClearAllPoints();
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 	LootSpy_CompactLootButton1:ClearAllPoints();
 	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
@@ -401,6 +403,7 @@ function LootSpy_START_LOOT_ROLL(rollid)
 	  	["timeWon"] = 0
 	  };
 	end
+	LootSpy_UpdateTable()
 end
 
 function LootSpy_SaveRoll(itemLink, rollType, playerName)
