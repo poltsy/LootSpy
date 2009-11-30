@@ -2,13 +2,13 @@
 ..\FrameXML\UI.xsd">
 	<Frame name="LootSpy_LootTableTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="125" y="50"/>
+			<AbsDimension x="110" y="37"/>
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentItemIcon" file="Interface\Icons\INV_Axe_01">
+				<Texture name="$parentItemIcon"	file="Interface\Icons\INV_Box_02">
 					<Size>
-						<AbsDimension x="50" y="50"/>
+						<AbsDimension x="40" y="40"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
@@ -20,36 +20,36 @@
 				</Texture>
 				<FontString name="$parentNeedText" inherits="GameFontNormal" justifyH="LEFT" text="Need: 0">
 					<Size>
-						<AbsDimension x="75" y="15"/>
+						<AbsDimension x="55" y="10"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="0"/>
+								<AbsDimension x="8" y="-2"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentGreedText" inherits="GameFontNormal" justifyH="LEFT" text="Greed: 0">
 					<Size>
-						<AbsDimension x="75" y="15"/>
+						<AbsDimension x="55" y="10"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="-16"/>
+								<AbsDimension x="8" y="-14"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentPassedText" inherits="GameFontNormal" justifyH="LEFT" text="Passed: 0">
 					<Size>
-						<AbsDimension x="75" y="15"/>
+						<AbsDimension x="55" y="10"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="-32"/>
+								<AbsDimension x="8" y="-26"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -60,6 +60,11 @@
 			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
+			<OnShow>
+				getglobal(this:GetName().."NeedText"):SetText("|cFFFF0000"..NEED..": 0|r")
+				getglobal(this:GetName().."GreedText"):SetText("|cFF00FF00"..GREED..": 0|r")
+				getglobal(this:GetName().."PassedText"):SetText(PASS..": 0")
+			</OnShow>
 		</Scripts>
 	</Frame>
 	
@@ -69,7 +74,7 @@
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentItemIcon" file="Interface\Icons\INV_Axe_01">
+				<Texture name="$parentItemIcon" file="Interface\Icons\INV_Box_02">
 					<Size>
 						<AbsDimension x="20" y="20"/>
 					</Size>
