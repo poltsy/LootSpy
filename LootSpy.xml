@@ -228,6 +228,124 @@
 			</OnMouseUp>
 		</Scripts>
 	</Frame>
+
+        <Frame name="LootSpy_LootButton6" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_LootButton1">
+                                <Offset>
+                                        <AbsDimension x="-120" y="36"/>
+                                </Offset>
+                        </Anchor>
+                </Anchors>
+                <Scripts>
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(6);
+                                end 
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(6);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(6);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_LootButton7" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_LootButton6">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>
+                </Anchors>
+                <Scripts>
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(7);
+                                end
+                        </OnEnter> 
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(7);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(7);
+                                end 
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_LootButton8" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_LootButton7">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>
+                </Anchors>
+                <Scripts>
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(8);
+                                end
+                        </OnEnter> 
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(8);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(8);
+                                end 
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_LootButton9" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_LootButton8">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>
+                </Anchors>
+                <Scripts>
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(9);
+                                end
+                        </OnEnter> 
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(9);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(9);
+                                end 
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_LootButton10" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_LootButton9">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>
+                </Anchors>
+                <Scripts>
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(10);
+                                end
+                        </OnEnter> 
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(10);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(10);
+                                end 
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+
+
 	
 	<Frame name="LootSpy_CompactLootButton1" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" movable="true" enableMouse="true">
 		<Anchors>
@@ -350,6 +468,121 @@
 			</OnMouseUp>
 		</Scripts>
 	</Frame>
+        <Frame name="LootSpy_CompactLootButton6" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton5">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>  
+                </Anchors>
+                <Scripts> 
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(6);
+                                end
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(6);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(6);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_CompactLootButton7" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton6">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>  
+                </Anchors>
+                <Scripts> 
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(7);
+                                end
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(7);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(7);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_CompactLootButton8" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton7">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>  
+                </Anchors>
+                <Scripts> 
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(8);
+                                end
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(8);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(8);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_CompactLootButton9" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton8">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>  
+                </Anchors>
+                <Scripts> 
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(9);
+                                end
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(9);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(9);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
+        <Frame name="LootSpy_CompactLootButton10" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
+                <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton9">
+                                <Offset>
+                                        <AbsDimension x="0" y="-5"/>
+                                </Offset>
+                        </Anchor>  
+                </Anchors>
+                <Scripts> 
+                        <OnEnter>
+                                if (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Tooltip(10);
+                                end
+                        </OnEnter>
+                        <OnMouseUp>
+                                if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_Remove(10);
+                                elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
+                                        LootSpy_ItemTooltip(10);
+                                end
+                        </OnMouseUp>
+                </Scripts>
+        </Frame>
 	
 	<Frame name="LootSpyConfigFrame"
 	    toplevel="true" parent="UIParent" frameStrata="DIALOG"

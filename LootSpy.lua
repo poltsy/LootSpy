@@ -98,7 +98,7 @@ function LootSpyConfigFrame_OnShow()
 end
 
 function LootSpy_Init(self)
-	for i = 1,5 do
+	for i = 1,10 do
 		getglobal("LootSpy_LootButton"..i):Hide();
 		getglobal("LootSpy_CompactLootButton"..i):Hide();
 	end
@@ -129,7 +129,7 @@ function LootSpy_Init(self)
 	LootSpy_CompactLootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 
 	if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
-		for i = 1,5 do
+		for i = 1,10 do
 			local buttonName = "nil";
 			if (LootSpy_Saved["compact"] == true) then
 				buttonName = "LootSpy_CompactLootButton";
@@ -158,7 +158,7 @@ function LootSpy_Slash(arg)
 	if (arg == "toggle") then
 		if (LootSpy_Saved["on"] == true) then
 			LootSpy_Saved["on"] = false;
-			for i = 1,5 do
+			for i = 1,10 do
 				local buttonName = "nil";
 				if (LootSpy_Saved["compact"] == true) then
 					buttonName = "LootSpy_CompactLootButton";
@@ -173,7 +173,7 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["on"] = true;
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
-				for i = 1,5 do
+				for i = 1,10 do
 					local buttonName = "nil";
 					if (LootSpy_Saved["compact"] == true) then
 						buttonName = "LootSpy_CompactLootButton";
@@ -190,7 +190,7 @@ function LootSpy_Slash(arg)
 		if (LootSpy_Saved["locked"] == true) then
 			LootSpy_Saved["locked"] = false;
 			if (LootSpy_Saved["on"] == true) then
-				for i = 1,5 do
+				for i = 1,10 do
 					local buttonName = "nil";
 					if (LootSpy_Saved["compact"] == true) then
 						buttonName = "LootSpy_CompactLootButton";
@@ -217,7 +217,7 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["compact"] = false;
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
-				for i = 1,5 do
+				for i = 1,10 do
 					getglobal("LootSpy_LootButton"..i):Show();
 				end
 			end
@@ -225,7 +225,7 @@ function LootSpy_Slash(arg)
 			LootSpy_Saved["compact"] = true;
 			LootSpy_UpdateTable();
 			if (LootSpy_Saved["locked"] == false) and (LootSpy_Saved["on"] == true) then
-				for i = 1,5 do
+				for i = 1,10 do
 					getglobal("LootSpy_CompactLootButton"..i):Show();
 				end
 			end
@@ -278,13 +278,13 @@ function LootSpy_OnUpdate()
 			end
 		end
 		i = i + 1;
-		if (i > 5) then
+		if (i > 10) then
 			return;
 		end
 	end
 end
 function LootSpy_UpdateTable()
-	for i = 1,5 do
+	for i = 1,10 do
 		getglobal("LootSpy_LootButton"..i):SetAlpha(1);
 		getglobal("LootSpy_LootButton"..i):Hide();
 		getglobal("LootSpy_CompactLootButton"..i):SetAlpha(1);
@@ -308,7 +308,7 @@ function LootSpy_UpdateTable()
 		end
 		getglobal(buttonName..i.."ItemIcon"):SetTexture(LootSpySession[item]["icon"]);
 		i = i + 1;
-		if (i > 5) then
+		if (i > 10) then
 			return;
 		end
 	end
