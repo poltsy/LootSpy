@@ -326,9 +326,7 @@ function LootSpy_Tooltip(id)
 	GameTooltip:SetText(LootSpySession[name]["name"]);
 	GameTooltip:AddLine(LS_NEEDERS);
 	for player in pairs(LootSpySession[name]["needNames"]) do
-		if (LootSpySession[name]["needNames"][player]) then -- maybe redundant, check later
-		   GameTooltip:AddLine(LootSpySession[name]["needNames"][player]) 
-		end
+		GameTooltip:AddLine(LootSpySession[name]["needNames"][player]) 
 	end
 	GameTooltip:Show();
 end
