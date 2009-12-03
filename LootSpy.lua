@@ -300,10 +300,10 @@ function LootSpy_UpdateTable()
 		end
 		getglobal(buttonName..i):Show();
 		if (LootSpy_Saved["compact"] == true) then
-			getglobal(buttonName..i.."Text"):SetText("N:"..LootSpySession[item]["need"].." G:"..LootSpySession[item]["greed"].." P:"..LootSpySession[item]["passed"]);
+			getglobal(buttonName..i.."Text"):SetText("|cFFFF0000N:"..LootSpySession[item]["need"].."|cFF00FF00 G:"..LootSpySession[item]["greed"].."|r P:"..LootSpySession[item]["passed"]);
 		else
-			getglobal(buttonName..i.."NeedText"):SetText(NEED..": "..LootSpySession[item]["need"]);
-			getglobal(buttonName..i.."GreedText"):SetText(GREED..": "..LootSpySession[item]["greed"]);
+			getglobal(buttonName..i.."NeedText"):SetText("|cFFFF0000"..NEED..": "..LootSpySession[item]["need"].."|r");
+			getglobal(buttonName..i.."GreedText"):SetText("|cFF00FF00"..GREED..": "..LootSpySession[item]["greed"].."|r");
 			getglobal(buttonName..i.."PassedText"):SetText(PASS..": "..LootSpySession[item]["passed"]);
 		end
 		getglobal(buttonName..i.."ItemIcon"):SetTexture(LootSpySession[item]["icon"]);

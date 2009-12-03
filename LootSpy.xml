@@ -60,11 +60,11 @@
 			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
-			<OnShow>
+			<OnLoad>
 				getglobal(this:GetName().."NeedText"):SetText("|cFFFF0000"..NEED..": 0|r")
 				getglobal(this:GetName().."GreedText"):SetText("|cFF00FF00"..GREED..": 0|r")
 				getglobal(this:GetName().."PassedText"):SetText(PASS..": 0")
-			</OnShow>
+			</OnLoad>
 		</Scripts>
 	</Frame>
 	
@@ -104,6 +104,9 @@
 			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
+			<OnLoad>
+				getglobal(this:GetName().."Text"):SetText("|cFFFF0000N: 0|cFF00FF00 G: 0|r P:0")
+			</OnLoad>
 		</Scripts>
 	</Frame>
 	
