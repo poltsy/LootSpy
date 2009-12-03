@@ -4,7 +4,7 @@ local THREETHREE = select(4, GetBuildInfo()) >= 30300
 
 LootSpySession = {}
 
-LOOTSPY_VERSION = "3.3.1"
+LOOTSPY_VERSION = "3.3.2"
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
