@@ -455,10 +455,10 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	  if item then LootSpy_SaveRoll(item, "greed", i) return end
 
 	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF, msg)
-	  if link then LootSpy_SaveRoll(item, "pass", i) return end
+	  if item then LootSpy_SaveRoll(item, "pass", i) return end
 
 	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
-	  if link then LootSpy_SaveRoll(item, "pass", i) return end
+	  if item then LootSpy_SaveRoll(item, "pass", i) return end
 
 	  name, item = LootSpy_unformat(LOOT_ROLL_NEED, msg)
 	  if name then LootSpy_SaveRoll(item, "need", name) return end
