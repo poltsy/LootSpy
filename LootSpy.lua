@@ -4,7 +4,7 @@ local THREETHREE = select(4, GetBuildInfo()) >= 30300
 
 LootSpySession = {}
 
-LOOTSPY_VERSION = "3.3.2"
+local LOOTSPY_VERSION = "3.3.3"
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -121,7 +121,7 @@ function LootSpy_Init(self)
 		LootSpy_Saved["compact"] = 0;
 	end
 
-	LootSpySession = {};
+	LootSpySession = {}
 
 	LootSpy_LootButton1:ClearAllPoints();
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
@@ -283,6 +283,7 @@ function LootSpy_OnUpdate()
 		end
 	end
 end
+
 function LootSpy_UpdateTable()
 	for i = 1,10 do
 		getglobal("LootSpy_LootButton"..i):SetAlpha(1);
@@ -302,9 +303,9 @@ function LootSpy_UpdateTable()
 		if (LootSpy_Saved["compact"] == true) then
 			getglobal(buttonName..i.."Text"):SetText("|cFFFF0000N:"..LootSpySession[item]["need"].."|cFF00FF00 G:"..LootSpySession[item]["greed"].."|r P:"..LootSpySession[item]["passed"]);
 		else
-			getglobal(buttonName..i.."NeedText"):SetText("|cFFFF0000"..NEED..": "..LootSpySession[item]["need"].."|r");
-			getglobal(buttonName..i.."GreedText"):SetText("|cFF00FF00"..GREED..": "..LootSpySession[item]["greed"].."|r");
-			getglobal(buttonName..i.."PassedText"):SetText(PASS..": "..LootSpySession[item]["passed"]);
+			getglobal(buttonName..i.."NeedText"):SetText("|cFFFF0000"..LootSpySession[item]["need"].."|r");
+			getglobal(buttonName..i.."GreedText"):SetText("|cFF00FF00"..LootSpySession[item]["greed"].."|r");
+			getglobal(buttonName..i.."PassedText"):SetText(LootSpySession[item]["passed"]);
 		end
 		getglobal(buttonName..i.."ItemIcon"):SetTexture(LootSpySession[item]["icon"]);
 		i = i + 1;
@@ -414,7 +415,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		  while (LootSpySession[rollid]["needNames"][i]) do
 			i = i + 1
 		  end
-		  LootSpySession[rollid]["needNames"][i] = playerName
+		  if (i < 15) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big
 		  LootSpySession[rollid]["need"] = LootSpySession[rollid]["need"] + 1
 		elseif (rollType == "greed") then
 		  LootSpySession[rollid]["greed"] = LootSpySession[rollid]["greed"] + 1
@@ -517,10 +518,10 @@ function LootSpy_ChatFilter(self, event, msg)
 	if msg:match(LOOT_ROLL_PASSED_SELF_AUTO) then return true end
 
 	if THREETHREE then
-		_,_, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+		_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
 		if msg:match(pattern) then return true end
 
-		_,_, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+		_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
 		if msg:match(pattern) then return true end
 	end
 end

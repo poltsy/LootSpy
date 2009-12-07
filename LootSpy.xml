@@ -2,7 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Frame name="LootSpy_LootTableTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="110" y="37"/>
+			<AbsDimension x="37" y="37"/>
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -18,38 +18,38 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentNeedText" inherits="GameFontNormal" justifyH="LEFT" text="Need: 0">
+				<FontString name="$parentNeedText" inherits="GameFontNormal">
 					<Size>
-						<AbsDimension x="55" y="10"/>
+						<AbsDimension x="45" y="37"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="-2"/>
+								<AbsDimension x="-10" y="-2"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentGreedText" inherits="GameFontNormal" justifyH="LEFT" text="Greed: 0">
+				<FontString name="$parentGreedText" inherits="GameFontNormal">
 					<Size>
-						<AbsDimension x="55" y="10"/>
+						<AbsDimension x="45" y="37"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="-14"/>
+								<AbsDimension x="15" y="-2"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentPassedText" inherits="GameFontNormal" justifyH="LEFT" text="Passed: 0">
+				<FontString name="$parentPassedText" inherits="GameFontNormal">
 					<Size>
-						<AbsDimension x="55" y="10"/>
+						<AbsDimension x="45" y="37"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentItemIcon">
 							<Offset>
-								<AbsDimension x="8" y="-26"/>
+								<AbsDimension x="41" y="-2"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -61,9 +61,12 @@
 				GameTooltip:Hide();
 			</OnLeave>
 			<OnLoad>
-				getglobal(this:GetName().."NeedText"):SetText("|cFFFF0000"..NEED..": 0|r")
-				getglobal(this:GetName().."GreedText"):SetText("|cFF00FF00"..GREED..": 0|r")
-				getglobal(this:GetName().."PassedText"):SetText(PASS..": 0")
+				getglobal(this:GetName().."NeedText"):SetFont("Fonts\\ARIALN.TTF", 24)
+				getglobal(this:GetName().."NeedText"):SetText("|cFFFF0000N|r")
+				getglobal(this:GetName().."GreedText"):SetFont("Fonts\\ARIALN.TTF", 24);
+				getglobal(this:GetName().."GreedText"):SetText("|cFF00FF00G|r")
+				getglobal(this:GetName().."PassedText"):SetFont("Fonts\\ARIALN.TTF", 24);
+				getglobal(this:GetName().."PassedText"):SetText("P")
 			</OnLoad>
 		</Scripts>
 	</Frame>
