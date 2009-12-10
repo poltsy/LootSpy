@@ -1,7 +1,5 @@
 -- Originally by Tehl of Defias Brotherhood(EU)
 
-local THREETHREE = select(4, GetBuildInfo()) >= 30300
-
 LootSpySession = {}
 
 local LOOTSPY_VERSION = "3.3.3"
@@ -470,13 +468,11 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED, msg)
 	  if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  if THREETHREE then -- to be added in 3.3
-		name, item = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
-		if name then LootSpy_SaveRoll(item, "greed", name) return end
+	  name, item = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+	  if name then LootSpy_SaveRoll(item, "greed", name) return end
 
-		item = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
-		if item then LootSpy_SaveRoll(item, "greed", i) return end
-	  end
+	  item = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+	  if item then LootSpy_SaveRoll(item, "greed", i) return end
         end
 end
 
@@ -517,11 +513,9 @@ function LootSpy_ChatFilter(self, event, msg)
 	_,_, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
 	if msg:match(LOOT_ROLL_PASSED_SELF_AUTO) then return true end
 
-	if THREETHREE then
-		_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
-		if msg:match(pattern) then return true end
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+	if msg:match(pattern) then return true end
 
-		_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
-		if msg:match(pattern) then return true end
-	end
+	_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+	if msg:match(pattern) then return true end
 end
