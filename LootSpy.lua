@@ -352,13 +352,15 @@ function LootSpy_Remove(id)
 			name = item;
 		end
 	end
-	for data in pairs(LootSpySession[name]["needNames"]) do
+	if name then
+	  for data in pairs(LootSpySession[name]["needNames"]) do
 		LootSpySession[name]["needNames"][data] = nil;
-	end
-	for data in pairs(LootSpySession[name]) do
+	  end
+	  for data in pairs(LootSpySession[name]) do
 		LootSpySession[name][data] = nil;
+	  end
+	  LootSpySession[name] = nil;
 	end
-	LootSpySession[name] = nil;
 	LootSpy_UpdateTable();
 end
 
