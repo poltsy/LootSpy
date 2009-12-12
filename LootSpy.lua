@@ -138,6 +138,8 @@ function LootSpy_Init(self)
 		end
 	end
 
+	LootSpy_LoadPatterns()
+
 	if (LootSpy_Saved["on"] == true) then -- don't listen if we don't care
 		self:RegisterEvent("START_LOOT_ROLL")
 		self:RegisterEvent("CHAT_MSG_LOOT")
@@ -380,9 +382,8 @@ function LootSpy_UpdatePosition()
 end
 
 function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifted from RollWatcher
-	local pattern = string.gsub(fmt, "(%%s)", "(.+)")
-	local _, _, a1, a2 = string.find(msg, pattern)
-	return a1, a2, pattern
+	local _, _, a1, a2 = string.find(msg, fmt)
+	return a1, a2
 end
 
 function LootSpy_START_LOOT_ROLL(rollid)
@@ -415,7 +416,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		  while (LootSpySession[rollid]["needNames"][i]) do
 			i = i + 1
 		  end
-		  if (i < 15) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big
+		  if (i < 15) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big, maybe make it configurable
 		  LootSpySession[rollid]["need"] = LootSpySession[rollid]["need"] + 1
 		elseif (rollType == "greed") then
 		  LootSpySession[rollid]["greed"] = LootSpySession[rollid]["greed"] + 1
@@ -434,90 +435,72 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	  local item, name
 	  local i = UnitName("player")
 
-	  item = LootSpy_unformat(LOOT_ROLL_YOU_WON, msg)
+	  item = LootSpy_unformat(LS_YOU_WON, msg)
 	  if item then LootSpy_SaveRoll(item, "end", i) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_WON, msg)
+	  name, item = LootSpy_unformat(LS_WON, msg)
 	  if name then LootSpy_SaveRoll(item, "end", name) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_ALL_PASSED, msg)
+	  item = LootSpy_unformat(LS_ALL_PASSED, msg)
 	  if item then LootSpy_SaveRoll(item, "end") return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO, msg)
+	  name, item = LootSpy_unformat(LS_PASSED_AUTO, msg)
 	  if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO_FEMALE, msg)
+	  name, item = LootSpy_unformat(LS_PASSED_AUTO_FEMALE, msg)
 	  if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_NEED_SELF, msg)
+	  item = LootSpy_unformat(LS_NEED_SELF, msg)
 	  if item then LootSpy_SaveRoll(item, "need", i) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_GREED_SELF, msg)
+	  item = LootSpy_unformat(LS_GREED_SELF, msg)
 	  if item then LootSpy_SaveRoll(item, "greed", i) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF, msg)
+	  item = LootSpy_unformat(LS_PASSED_SELF, msg)
 	  if item then LootSpy_SaveRoll(item, "pass", i) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
+	  item = LootSpy_unformat(LS_PASSED_SELF_AUTO, msg)
 	  if item then LootSpy_SaveRoll(item, "pass", i) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_NEED, msg)
+	  name, item = LootSpy_unformat(LS_NEED, msg)
 	  if name then LootSpy_SaveRoll(item, "need", name) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_GREED, msg)
+	  name, item = LootSpy_unformat(LS_GREED, msg)
 	  if name then LootSpy_SaveRoll(item, "greed", name) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_PASSED, msg)
+	  name, item = LootSpy_unformat(LS_PASSED, msg)
 	  if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  name, item = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
+	  name, item = LootSpy_unformat(LS_DISENCHANT, msg)
 	  if name then LootSpy_SaveRoll(item, "greed", name) return end
 
-	  item = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
+	  item = LootSpy_unformat(LS_DISENCHANT_SELF, msg)
 	  if item then LootSpy_SaveRoll(item, "greed", i) return end
         end
 end
 
 function LootSpy_ChatFilter(self, event, msg)
+	if msg:match(LS_GREED) or msg:match(LS_GREED_SELF) or msg:match(LS_NEED) or msg:match(LS_NEED_SELF)
+	    or msg:match(LS_PASSED) or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE)
+	    or msg:match(LS_PASSED_SELF_AUTO) or msg:match(LS_DISENCHANT) or msg:match(LS_DISENCHANT_SELF)
+	    and not msg:match(LS_ALL_PASSED)
+	  then return true
+	end
+end
 
-	-- insert magic to mangle the pattern to something we can match against
-	-- I feel sick looking at this stuff
-	local pattern, pattern2
-	_, _, pattern2 = LootSpy_unformat(LOOT_ROLL_ALL_PASSED, msg)
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_GREED, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_GREED_SELF, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_NEED_SELF, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED, msg)
-	if msg:match(pattern) and not msg:match(pattern2) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_AUTO_FEMALE, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_SELF, msg)
-	if msg:match(pattern) and not msg:match(pattern2) then return true end
-
-	_,_, pattern = LootSpy_unformat(LOOT_ROLL_PASSED_SELF_AUTO, msg)
-	if msg:match(LOOT_ROLL_PASSED_SELF_AUTO) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT, msg)
-	if msg:match(pattern) then return true end
-
-	_, _, pattern = LootSpy_unformat(LOOT_ROLL_DISENCHANT_SELF, msg)
-	if msg:match(pattern) then return true end
+function LootSpy_LoadPatterns()
+	LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
+	LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
+	LS_GREED_SELF = string.gsub(LOOT_ROLL_GREED_SELF, "(%%s)", "(.+)")
+	LS_NEED = string.gsub(LOOT_ROLL_NEED, "(%%s)", "(.+)")
+	LS_NEED_SELF = string.gsub(LOOT_ROLL_NEED_SELF, "(%%s)", "(.+)")
+	LS_PASSED = string.gsub(LOOT_ROLL_PASSED, "(%%s)", "(.+)")
+	LS_PASSED_AUTO = string.gsub(LOOT_ROLL_PASSED_AUTO, "(%%s)", "(.+)")
+	LS_PASSED_AUTO_FEMALE = string.gsub(LOOT_ROLL_PASSED_AUTO_FEMALE, "(%%s)", "(.+)")
+	LS_PASSED_SELF = string.gsub(LOOT_ROLL_PASSED_SELF, "(%%s)", "(.+)")
+	LS_PASSED_SELF_AUTO = string.gsub(LOOT_ROLL_PASSED_SELF_AUTO, "(%%s)", "(.+)")
+	LS_DISENCHANT = string.gsub(LOOT_ROLL_DISENCHANT, "(%%s)", "(.+)")
+	LS_DISENCHANT_SELF = string.gsub(LOOT_ROLL_DISENCHANT_SELF, "(%%s)", "(.+)")
+	LS_YOU_WON = string.gsub(LOOT_ROLL_YOU_WON, "(%%s)", "(.+)")
+	LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
 end
