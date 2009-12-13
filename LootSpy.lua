@@ -2,7 +2,7 @@
 
 local LootSpySession = {}
 
-local LOOTSPY_VERSION = "3.3.3"
+local LOOTSPY_VERSION = "3.3.4"
 
 local LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
 local LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
