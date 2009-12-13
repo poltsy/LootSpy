@@ -1,8 +1,23 @@
 -- Originally by Tehl of Defias Brotherhood(EU)
 
-LootSpySession = {}
+local LootSpySession = {}
 
 local LOOTSPY_VERSION = "3.3.3"
+
+local LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
+local LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
+local LS_GREED_SELF = string.gsub(LOOT_ROLL_GREED_SELF, "(%%s)", "(.+)")
+local LS_NEED = string.gsub(LOOT_ROLL_NEED, "(%%s)", "(.+)")
+local LS_NEED_SELF = string.gsub(LOOT_ROLL_NEED_SELF, "(%%s)", "(.+)")
+local LS_PASSED = string.gsub(LOOT_ROLL_PASSED, "(%%s)", "(.+)")
+local LS_PASSED_AUTO = string.gsub(LOOT_ROLL_PASSED_AUTO, "(%%s)", "(.+)")
+local LS_PASSED_AUTO_FEMALE = string.gsub(LOOT_ROLL_PASSED_AUTO_FEMALE, "(%%s)", "(.+)")
+local LS_PASSED_SELF = string.gsub(LOOT_ROLL_PASSED_SELF, "(%%s)", "(.+)")
+local LS_PASSED_SELF_AUTO = string.gsub(LOOT_ROLL_PASSED_SELF_AUTO, "(%%s)", "(.+)")
+local LS_DISENCHANT = string.gsub(LOOT_ROLL_DISENCHANT, "(%%s)", "(.+)")
+local LS_DISENCHANT_SELF = string.gsub(LOOT_ROLL_DISENCHANT_SELF, "(%%s)", "(.+)")
+local LS_YOU_WON = string.gsub(LOOT_ROLL_YOU_WON, "(%%s)", "(.+)")
+local LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -119,8 +134,6 @@ function LootSpy_Init(self)
 		LootSpy_Saved["compact"] = 0;
 	end
 
-	LootSpySession = {}
-
 	LootSpy_LootButton1:ClearAllPoints();
 	LootSpy_LootButton1:SetPoint("TOPLEFT","UIParent","BOTTOMLEFT",LootSpy_Saved["coordX"],LootSpy_Saved["coordY"]);
 	LootSpy_CompactLootButton1:ClearAllPoints();
@@ -137,8 +150,6 @@ function LootSpy_Init(self)
 			getglobal(buttonName..i):Show();
 		end
 	end
-
-	LootSpy_LoadPatterns()
 
 	if (LootSpy_Saved["on"] == true) then -- don't listen if we don't care
 		self:RegisterEvent("START_LOOT_ROLL")
@@ -430,8 +441,12 @@ end
 
 function LootSpy_CHAT_MSG_LOOT(msg)
 	if not (LootSpy_Saved) then return end
+	if not (LootSpy_Saved["on"] == true) then return end -- if not enabled return
 
-	if (LootSpy_Saved["on"] == true) then
+	local pm = GetNumPartyMembers()
+	local rm = GetNumRaidMembers()
+
+	if (pm > 0) or (rm > 0) then -- if in a party/raid then ... 
 	  local item, name
 	  local i = UnitName("player")
 
@@ -476,31 +491,19 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 
 	  item = LootSpy_unformat(LS_DISENCHANT_SELF, msg)
 	  if item then LootSpy_SaveRoll(item, "greed", i) return end
-        end
-end
-
-function LootSpy_ChatFilter(self, event, msg)
-	if msg:match(LS_GREED) or msg:match(LS_GREED_SELF) or msg:match(LS_NEED) or msg:match(LS_NEED_SELF)
-	    or msg:match(LS_PASSED) or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE)
-	    or msg:match(LS_PASSED_SELF_AUTO) or msg:match(LS_DISENCHANT) or msg:match(LS_DISENCHANT_SELF)
-	    and not msg:match(LS_ALL_PASSED)
-	  then return true
 	end
 end
 
-function LootSpy_LoadPatterns()
-	LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
-	LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
-	LS_GREED_SELF = string.gsub(LOOT_ROLL_GREED_SELF, "(%%s)", "(.+)")
-	LS_NEED = string.gsub(LOOT_ROLL_NEED, "(%%s)", "(.+)")
-	LS_NEED_SELF = string.gsub(LOOT_ROLL_NEED_SELF, "(%%s)", "(.+)")
-	LS_PASSED = string.gsub(LOOT_ROLL_PASSED, "(%%s)", "(.+)")
-	LS_PASSED_AUTO = string.gsub(LOOT_ROLL_PASSED_AUTO, "(%%s)", "(.+)")
-	LS_PASSED_AUTO_FEMALE = string.gsub(LOOT_ROLL_PASSED_AUTO_FEMALE, "(%%s)", "(.+)")
-	LS_PASSED_SELF = string.gsub(LOOT_ROLL_PASSED_SELF, "(%%s)", "(.+)")
-	LS_PASSED_SELF_AUTO = string.gsub(LOOT_ROLL_PASSED_SELF_AUTO, "(%%s)", "(.+)")
-	LS_DISENCHANT = string.gsub(LOOT_ROLL_DISENCHANT, "(%%s)", "(.+)")
-	LS_DISENCHANT_SELF = string.gsub(LOOT_ROLL_DISENCHANT_SELF, "(%%s)", "(.+)")
-	LS_YOU_WON = string.gsub(LOOT_ROLL_YOU_WON, "(%%s)", "(.+)")
-	LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
+function LootSpy_ChatFilter(self, event, msg)
+	local pm = GetNumPartyMembers()
+	local rm = GetNumRaidMembers()
+
+	if (pm > 0) or (rm > 0) then
+	  if msg:match(LS_GREED) or msg:match(LS_GREED_SELF) or msg:match(LS_NEED) or msg:match(LS_NEED_SELF)
+	      or msg:match(LS_PASSED) or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE)
+	      or msg:match(LS_PASSED_SELF_AUTO) or msg:match(LS_DISENCHANT) or msg:match(LS_DISENCHANT_SELF)
+	      and not msg:match(LS_ALL_PASSED)
+	    then return true
+	  end
+	end
 end
