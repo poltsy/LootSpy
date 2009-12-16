@@ -365,7 +365,7 @@ function LootSpy_Remove(id)
 			name = item;
 		end
 	end
-	if name then
+	if (LootSpySession[name]) then
 	  for data in pairs(LootSpySession[name]["needNames"]) do
 		LootSpySession[name]["needNames"][data] = nil;
 	  end
