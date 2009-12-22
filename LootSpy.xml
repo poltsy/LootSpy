@@ -386,7 +386,7 @@
 		<Anchors>
 			<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton1">
 				<Offset>
-					<AbsDimension x="0" y="-5"/>
+					<AbsDimension x="0" y="40"/>
 				</Offset>
 			</Anchor>
 		</Anchors>
@@ -409,7 +409,7 @@
 		<Anchors>
 			<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton2">
 				<Offset>
-					<AbsDimension x="0" y="-5"/>
+					<AbsDimension x="0" y="40"/>
 				</Offset>
 			</Anchor>
 		</Anchors>
@@ -432,7 +432,7 @@
 		<Anchors>
 			<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton3">
 				<Offset>
-					<AbsDimension x="0" y="-5"/>
+					<AbsDimension x="0" y="40"/>
 				</Offset>
 			</Anchor>
 		</Anchors>
@@ -455,7 +455,7 @@
 		<Anchors>
 			<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton4">
 				<Offset>
-					<AbsDimension x="0" y="-5"/>
+					<AbsDimension x="0" y="40"/>
 				</Offset>
 			</Anchor>
 		</Anchors>
@@ -478,7 +478,7 @@
                 <Anchors>
                         <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton5">
                                 <Offset>
-                                        <AbsDimension x="0" y="-5"/>
+                                        <AbsDimension x="0" y="40"/>
                                 </Offset>
                         </Anchor>  
                 </Anchors>
@@ -501,7 +501,7 @@
                 <Anchors>
                         <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton6">
                                 <Offset>
-                                        <AbsDimension x="0" y="-5"/>
+                                        <AbsDimension x="0" y="40"/>
                                 </Offset>
                         </Anchor>  
                 </Anchors>
@@ -524,7 +524,7 @@
                 <Anchors>
                         <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton7">
                                 <Offset>
-                                        <AbsDimension x="0" y="-5"/>
+                                        <AbsDimension x="0" y="40"/>
                                 </Offset>
                         </Anchor>  
                 </Anchors>
@@ -547,7 +547,7 @@
                 <Anchors>
                         <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton8">
                                 <Offset>
-                                        <AbsDimension x="0" y="-5"/>
+                                        <AbsDimension x="0" y="40"/>
                                 </Offset>
                         </Anchor>  
                 </Anchors>
@@ -570,7 +570,7 @@
                 <Anchors>
                         <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="LootSpy_CompactLootButton9">
                                 <Offset>
-                                        <AbsDimension x="0" y="-5"/>
+                                        <AbsDimension x="0" y="40"/>
                                 </Offset>
                         </Anchor>  
                 </Anchors>
