@@ -312,7 +312,7 @@ function LootSpy_UpdateTable()
 		end
 		getglobal(buttonName..i):Show();
 		if (LootSpy_Saved["compact"] == true) then
-			getglobal(buttonName..i.."Text"):SetText("|cFFFF0000N:"..LootSpySession[item]["need"].."|cFF00FF00 G:"..LootSpySession[item]["greed"].."|r P:"..LootSpySession[item]["passed"]);
+			getglobal(buttonName..i.."Text"):SetText("|cFFFF0000"..LootSpySession[item]["need"].."|cFF00FF00 "..LootSpySession[item]["greed"].."|r "..LootSpySession[item]["passed"]);
 		else
 			getglobal(buttonName..i.."NeedText"):SetText("|cFFFF0000"..LootSpySession[item]["need"].."|r");
 			getglobal(buttonName..i.."GreedText"):SetText("|cFF00FF00"..LootSpySession[item]["greed"].."|r");
@@ -336,9 +336,14 @@ function LootSpy_Tooltip(id)
 		end
 	end
 	GameTooltip:SetText(LootSpySession[name]["name"]);
-	GameTooltip:AddLine(LS_NEEDERS);
 	for player in pairs(LootSpySession[name]["needNames"]) do
-		GameTooltip:AddLine(LootSpySession[name]["needNames"][player]) 
+		GameTooltip:AddLine(LootSpySession[name]["needNames"][player],1)
+	end
+	for player in pairs(LootSpySession[name]["greedNames"]) do
+		GameTooltip:AddLine(LootSpySession[name]["greedNames"][player],0,1)
+	end
+	for player in pairs(LootSpySession[name]["passNames"]) do
+		GameTooltip:AddLine(LootSpySession[name]["passNames"][player])
 	end
 	GameTooltip:Show();
 end
@@ -366,14 +371,8 @@ function LootSpy_Remove(id)
 		end
 	end
 	if (LootSpySession[name]) then
-	  for data in pairs(LootSpySession[name]["needNames"]) do
-		LootSpySession[name]["needNames"][data] = nil;
-	  end
-	  for data in pairs(LootSpySession[name]) do
-		LootSpySession[name][data] = nil;
-	  end
 	  LootSpySession[name] = nil;
-	end
+	end 
 	LootSpy_UpdateTable();
 end
 
@@ -398,8 +397,13 @@ function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifte
 end
 
 function LootSpy_START_LOOT_ROLL(rollid)
+	local pm = GetNumPartyMembers()
+	local rm = GetNumRaidMembers()
+
+	if (pm < 1) and (rm < 1) then return end
+
 	if not (LootSpy_Saved) then return end
-	
+
 	if (LootSpy_Saved["on"] == true) then
 	  local texture, itemName = GetLootRollItemInfo(rollid)
 	  local itemLink = GetLootRollItemLink(rollid)
@@ -409,6 +413,8 @@ function LootSpy_START_LOOT_ROLL(rollid)
 	  	["link"] = itemLink,
 	  	["need"] = 0,
 	  	["needNames"] = {},
+	  	["greedNames"] = {}, -- adding these to see who is holding up the roll
+	  	["passNames"] = {},
 	  	["greed"] = 0,
 	  	["passed"] = 0,
 	  	["timeWon"] = 0
@@ -423,15 +429,25 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		if (rollType == "end") then
 		  LootSpySession[rollid]["timeWon"] = GetTime()
 		elseif (rollType == "need") then
-		  local i = 1;
+		  local i = 1
 		  while (LootSpySession[rollid]["needNames"][i]) do
 			i = i + 1
 		  end
-		  if (i < 15) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big, maybe make it configurable
+		  if (i < 10) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big, maybe make it configurable per type
 		  LootSpySession[rollid]["need"] = LootSpySession[rollid]["need"] + 1
 		elseif (rollType == "greed") then
+		  local i = 1
+		  while (LootSpySession[rollid]["greedNames"][i]) do
+		  	i = i + 1
+		  end
+		  if (i < 10) then LootSpySession[rollid]["greedNames"][i] = playerName end
 		  LootSpySession[rollid]["greed"] = LootSpySession[rollid]["greed"] + 1
 		elseif (rollType == "pass") then
+		  local i = 1
+		  while (LootSpySession[rollid]["passNames"][i]) do
+		  	i = i + 1
+		  end
+		  if (i < 10) then LootSpySession[rollid]["passNames"][i] = playerName end
 		  LootSpySession[rollid]["passed"] = LootSpySession[rollid]["passed"] + 1
 		end
 	  end
@@ -446,64 +462,64 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	local pm = GetNumPartyMembers()
 	local rm = GetNumRaidMembers()
 
-	if (pm > 0) or (rm > 0) then -- if in a party/raid then ... 
-	  local item, name
-	  local i = UnitName("player")
+	if (pm < 1) and (rm < 1) then return end
+	
+	local item, name
+	local i = UnitName("player")
 
-	  item = LootSpy_unformat(LS_YOU_WON, msg)
-	  if item then LootSpy_SaveRoll(item, "end", i) return end
+	item = LootSpy_unformat(LS_YOU_WON, msg)
+	if item then LootSpy_SaveRoll(item, "end", i) return end
 
-	  name, item = LootSpy_unformat(LS_WON, msg)
-	  if name then LootSpy_SaveRoll(item, "end", name) return end
+	name, item = LootSpy_unformat(LS_WON, msg)
+	if name then LootSpy_SaveRoll(item, "end", name) return end
 
-	  item = LootSpy_unformat(LS_ALL_PASSED, msg)
-	  if item then LootSpy_SaveRoll(item, "end") return end
+	item = LootSpy_unformat(LS_ALL_PASSED, msg)
+	if item then LootSpy_SaveRoll(item, "end") return end
 
-	  name, item = LootSpy_unformat(LS_PASSED_AUTO, msg)
-	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+	item = LootSpy_unformat(LS_DISENCHANT_SELF, msg)
+	if item then LootSpy_SaveRoll(item, "greed", i) return end
 
-	  name, item = LootSpy_unformat(LS_PASSED_AUTO_FEMALE, msg)
-	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+	name, item = LootSpy_unformat(LS_DISENCHANT, msg)
+	if name then LootSpy_SaveRoll(item, "greed", name) return end
 
-	  item = LootSpy_unformat(LS_NEED_SELF, msg)
-	  if item then LootSpy_SaveRoll(item, "need", i) return end
+	item = LootSpy_unformat(LS_GREED_SELF, msg)
+	if item then LootSpy_SaveRoll(item, "greed", i) return end
 
-	  item = LootSpy_unformat(LS_GREED_SELF, msg)
-	  if item then LootSpy_SaveRoll(item, "greed", i) return end
+	name, item = LootSpy_unformat(LS_GREED, msg)
+	if name then LootSpy_SaveRoll(item, "greed", name) return end
 
-	  item = LootSpy_unformat(LS_PASSED_SELF, msg)
-	  if item then LootSpy_SaveRoll(item, "pass", i) return end
+	item = LootSpy_unformat(LS_PASSED_SELF, msg)
+	if item then LootSpy_SaveRoll(item, "pass", i) return end
 
-	  item = LootSpy_unformat(LS_PASSED_SELF_AUTO, msg)
-	  if item then LootSpy_SaveRoll(item, "pass", i) return end
+	item = LootSpy_unformat(LS_PASSED_SELF_AUTO, msg)
+	if item then LootSpy_SaveRoll(item, "pass", i) return end
 
-	  name, item = LootSpy_unformat(LS_NEED, msg)
-	  if name then LootSpy_SaveRoll(item, "need", name) return end
+	name, item = LootSpy_unformat(LS_PASSED, msg)
+	if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  name, item = LootSpy_unformat(LS_GREED, msg)
-	  if name then LootSpy_SaveRoll(item, "greed", name) return end
+	name, item = LootSpy_unformat(LS_PASSED_AUTO, msg)
+	if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  name, item = LootSpy_unformat(LS_PASSED, msg)
-	  if name then LootSpy_SaveRoll(item, "pass", name) return end
+	name, item = LootSpy_unformat(LS_PASSED_AUTO_FEMALE, msg)
+	if name then LootSpy_SaveRoll(item, "pass", name) return end
 
-	  name, item = LootSpy_unformat(LS_DISENCHANT, msg)
-	  if name then LootSpy_SaveRoll(item, "greed", name) return end
+	item = LootSpy_unformat(LS_NEED_SELF, msg)
+	if item then LootSpy_SaveRoll(item, "need", i) return end
 
-	  item = LootSpy_unformat(LS_DISENCHANT_SELF, msg)
-	  if item then LootSpy_SaveRoll(item, "greed", i) return end
-	end
+	name, item = LootSpy_unformat(LS_NEED, msg)
+	if name then LootSpy_SaveRoll(item, "need", name) return end
 end
 
 function LootSpy_ChatFilter(self, event, msg)
 	local pm = GetNumPartyMembers()
 	local rm = GetNumRaidMembers()
 
-	if (pm > 0) or (rm > 0) then
-	  if msg:match(LS_GREED) or msg:match(LS_GREED_SELF) or msg:match(LS_NEED) or msg:match(LS_NEED_SELF)
-	      or msg:match(LS_PASSED) or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE)
-	      or msg:match(LS_PASSED_SELF_AUTO) or msg:match(LS_DISENCHANT) or msg:match(LS_DISENCHANT_SELF)
-	      and not msg:match(LS_ALL_PASSED)
-	    then return true
-	  end
+	if (pm < 1) and (rm < 1) then return end
+
+	if msg:match(LS_DISENCHANT) or msg:match(LS_GREED) or msg:match(LS_PASSED) or msg:match(LS_NEED)
+	    or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE) or msg:match(LS_DISENCHANT_SELF)
+	    or msg:match(LS_GREED_SELF) or msg:match(LS_NEED_SELF) or msg:match(LS_PASSED_SELF_AUTO)
+	    and not msg:match(LS_ALL_PASSED)
+	  then return true
 	end
 end

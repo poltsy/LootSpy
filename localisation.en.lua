@@ -12,6 +12,3 @@ LS_BENABLED	=	"LootSpy enabled";
 LS_BLOCKED	=	"Lock LootSpy frame";
 LS_BHIDESPAM	=	"Hide need/greed spam from the chat frame";
 LS_BCOMPACT	=	"Enable compact mode";
-
--- Frame Text
-LS_NEEDERS	=	"Needers:";

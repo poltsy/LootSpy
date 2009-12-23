@@ -89,7 +89,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentText" inherits="GameFontNormal" justifyH="LEFT" text="N: 0  G: 0  P: 0">
+				<FontString name="$parentText" inherits="GameFontNormal" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="105" y="15"/>
 					</Size>
@@ -108,7 +108,7 @@
 				GameTooltip:Hide();
 			</OnLeave>
 			<OnLoad>
-				getglobal(this:GetName().."Text"):SetText("|cFFFF0000N: 0|cFF00FF00 G: 0|r P:0")
+				getglobal(this:GetName().."Text"):SetText("|cFFFF00000|cFF00FF00 0|r 0")
 			</OnLoad>
 		</Scripts>
 	</Frame>
