@@ -18,6 +18,9 @@ local LS_DISENCHANT = string.gsub(LOOT_ROLL_DISENCHANT, "(%%s)", "(.+)")
 local LS_DISENCHANT_SELF = string.gsub(LOOT_ROLL_DISENCHANT_SELF, "(%%s)", "(.+)")
 local LS_YOU_WON = string.gsub(LOOT_ROLL_YOU_WON, "(%%s)", "(.+)")
 local LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
+local LS_ROLLED_DE = string.gsub(string.gsub(LOOT_ROLL_ROLLED_DE, "(%%s)", "(.+)"), "(%%d)", "(.+)")
+local LS_ROLLED_GREED = string.gsub(string.gsub(LOOT_ROLL_ROLLED_GREED, "(%%s)", "(.+)"), "(%%d)", "(.+)")
+local LS_ROLLED_NEED = string.gsub(string.gsub(LOOT_ROLL_ROLLED_NEED, "(%%s)", "(.+)"), "(%%d)", "(.+)")
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -333,6 +336,7 @@ function LootSpy_Tooltip(id)
 		id = id - 1;
 		if (id == 0) then
 			name = item;
+			break
 		end
 	end
 	GameTooltip:SetText(LootSpySession[name]["name"]);
@@ -355,6 +359,7 @@ function LootSpy_ItemTooltip(id)
 		id = id - 1;
 		if (id == 0) then
 			itemLink = LootSpySession[item]["link"];
+			break
 		end
 	end
 	GameTooltip:ClearLines();
@@ -368,6 +373,7 @@ function LootSpy_Remove(id)
 		id = id - 1;
 		if (id == 0) then
 			name = item;
+			break
 		end
 	end
 	if (LootSpySession[name]) then
@@ -397,11 +403,6 @@ function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifte
 end
 
 function LootSpy_START_LOOT_ROLL(rollid)
-	local pm = GetNumPartyMembers()
-	local rm = GetNumRaidMembers()
-
-	if (pm < 1) and (rm < 1) then return end
-
 	if not (LootSpy_Saved) then return end
 
 	if (LootSpy_Saved["on"] == true) then
@@ -428,6 +429,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 	  if LootSpySession[rollid]["link"] == itemLink then
 		if (rollType == "end") then
 		  LootSpySession[rollid]["timeWon"] = GetTime()
+		  break
 		elseif (rollType == "need") then
 		  local i = 1
 		  while (LootSpySession[rollid]["needNames"][i]) do
@@ -435,6 +437,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		  end
 		  if (i < 10) then LootSpySession[rollid]["needNames"][i] = playerName end -- hueg tooltip is too big, maybe make it configurable per type
 		  LootSpySession[rollid]["need"] = LootSpySession[rollid]["need"] + 1
+		  break
 		elseif (rollType == "greed") then
 		  local i = 1
 		  while (LootSpySession[rollid]["greedNames"][i]) do
@@ -442,6 +445,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		  end
 		  if (i < 10) then LootSpySession[rollid]["greedNames"][i] = playerName end
 		  LootSpySession[rollid]["greed"] = LootSpySession[rollid]["greed"] + 1
+		  break
 		elseif (rollType == "pass") then
 		  local i = 1
 		  while (LootSpySession[rollid]["passNames"][i]) do
@@ -449,6 +453,7 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName)
 		  end
 		  if (i < 10) then LootSpySession[rollid]["passNames"][i] = playerName end
 		  LootSpySession[rollid]["passed"] = LootSpySession[rollid]["passed"] + 1
+		  break
 		end
 	  end
 	end
@@ -459,19 +464,18 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	if not (LootSpy_Saved) then return end
 	if not (LootSpy_Saved["on"] == true) then return end -- if not enabled return
 
-	local pm = GetNumPartyMembers()
-	local rm = GetNumRaidMembers()
+	if msg:match(LS_ROLLED_DE) or msg:match(LS_ROLLED_GREED) -- many rolls falling through causes noticable slowdown
+		or msg:match(LS_ROLLED_NEED) then return         -- maybe this will help some
+	end
 
-	if (pm < 1) and (rm < 1) then return end
-	
 	local item, name
 	local i = UnitName("player")
 
 	item = LootSpy_unformat(LS_YOU_WON, msg)
-	if item then LootSpy_SaveRoll(item, "end", i) return end
+	if item then LootSpy_SaveRoll(item, "end") return end
 
 	name, item = LootSpy_unformat(LS_WON, msg)
-	if name then LootSpy_SaveRoll(item, "end", name) return end
+	if name then LootSpy_SaveRoll(item, "end") return end
 
 	item = LootSpy_unformat(LS_ALL_PASSED, msg)
 	if item then LootSpy_SaveRoll(item, "end") return end
@@ -511,15 +515,12 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 end
 
 function LootSpy_ChatFilter(self, event, msg)
-	local pm = GetNumPartyMembers()
-	local rm = GetNumRaidMembers()
+	if msg:match(LS_ROLLED_DE) or msg:match(LS_ROLLED_GREED) or msg:match(LS_ROLLED_NEED) then return true end
+	if msg:match(LS_ALL_PASSED) then return end -- not very likely :)
 
-	if (pm < 1) and (rm < 1) then return end
-
-	if msg:match(LS_DISENCHANT) or msg:match(LS_GREED) or msg:match(LS_PASSED) or msg:match(LS_NEED)
+	if msg:match(LS_DISENCHANT) or msg:match(LS_GREED) or msg:match(LS_NEED) or msg:match(LS_PASSED)
 	    or msg:match(LS_PASSED_AUTO) or msg:match(LS_PASSED_AUTO_FEMALE) or msg:match(LS_DISENCHANT_SELF)
 	    or msg:match(LS_GREED_SELF) or msg:match(LS_NEED_SELF) or msg:match(LS_PASSED_SELF_AUTO)
-	    and not msg:match(LS_ALL_PASSED)
 	  then return true
 	end
 end
