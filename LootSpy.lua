@@ -2,7 +2,7 @@
 
 local LootSpySession = {}
 
-local LOOTSPY_VERSION = "3.3.4"
+local LOOTSPY_VERSION = "3.3.5"
 
 local LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
 local LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
@@ -18,9 +18,9 @@ local LS_DISENCHANT = string.gsub(LOOT_ROLL_DISENCHANT, "(%%s)", "(.+)")
 local LS_DISENCHANT_SELF = string.gsub(LOOT_ROLL_DISENCHANT_SELF, "(%%s)", "(.+)")
 local LS_YOU_WON = string.gsub(LOOT_ROLL_YOU_WON, "(%%s)", "(.+)")
 local LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
-local LS_ROLLED_DE = string.gsub(string.gsub(LOOT_ROLL_ROLLED_DE, "(%%s)", "(.+)"), "(%%d)", "(.+)")
-local LS_ROLLED_GREED = string.gsub(string.gsub(LOOT_ROLL_ROLLED_GREED, "(%%s)", "(.+)"), "(%%d)", "(.+)")
-local LS_ROLLED_NEED = string.gsub(string.gsub(LOOT_ROLL_ROLLED_NEED, "(%%s)", "(.+)"), "(%%d)", "(.+)")
+local LS_ROLLED_DE = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_DE, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
+local LS_ROLLED_GREED = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_GREED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
+local LS_ROLLED_NEED = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_NEED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -340,14 +340,22 @@ function LootSpy_Tooltip(id)
 		end
 	end
 	GameTooltip:SetText(LootSpySession[name]["name"]);
-	for player in pairs(LootSpySession[name]["needNames"]) do
-		GameTooltip:AddLine(LootSpySession[name]["needNames"][player],1)
+	for number, player in pairs(LootSpySession[name]["needNames"]) do
+	    if LootSpySession[name]["rolled"] == 2 then
+		GameTooltip:AddDoubleLine(player,number,1,0,0,1)
+	     else
+		GameTooltip:AddLine(player,1)
+	    end
 	end
-	for player in pairs(LootSpySession[name]["greedNames"]) do
-		GameTooltip:AddLine(LootSpySession[name]["greedNames"][player],0,1)
+	for number, player in pairs(LootSpySession[name]["greedNames"]) do
+	    if LootSpySession[name]["rolled"] == 1 then
+		GameTooltip:AddDoubleLine(player,number,0,1,0,0,1)
+	      else
+		GameTooltip:AddLine(player,0,1)
+	    end
 	end
-	for player in pairs(LootSpySession[name]["passNames"]) do
-		GameTooltip:AddLine(LootSpySession[name]["passNames"][player])
+	for _, player in pairs(LootSpySession[name]["passNames"]) do
+		GameTooltip:AddLine(player)
 	end
 	GameTooltip:Show();
 end
@@ -398,8 +406,8 @@ function LootSpy_UpdatePosition()
 end
 
 function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifted from RollWatcher
-	local _, _, a1, a2 = string.find(msg, fmt)
-	return a1, a2
+	local _, _, a1, a2, a3 = string.find(msg, fmt)
+	return a1, a2, a3
 end
 
 function LootSpy_START_LOOT_ROLL(rollid)
@@ -418,16 +426,31 @@ function LootSpy_START_LOOT_ROLL(rollid)
 	  	["passNames"] = {},
 	  	["greed"] = 0,
 	  	["passed"] = 0,
-	  	["timeWon"] = 0
-	  };
+	  	["timeWon"] = 0,
+	  	["rolled"] = 0
+	  }
 	end
 	LootSpy_UpdateTable()
 end
 
-function LootSpy_SaveRoll(itemLink, rollType, playerName)
+function LootSpy_SaveRoll(itemLink, rollType, playerName, number)
 	for rollid in pairs(LootSpySession) do
 	  if LootSpySession[rollid]["link"] == itemLink then
-		if (rollType == "end") then
+		if (rollType == "rollgreed") then
+		  if (LootSpySession[rollid]["rolled"] == 0) then
+		    LootSpySession[rollid]["greedNames"] = {}  -- clear it so can store the rolls in index and since these are by roll everyone gets a number
+		    LootSpySession[rollid]["rolled"] = 1 -- don't clear again
+		  end
+		  LootSpySession[rollid]["greedNames"][number] = playerName
+		  break
+		elseif (rollType == "rollneed") then
+		  if (LootSpySession[rollid]["rolled"] == 0) then
+		    LootSpySession[rollid]["needNames"] = {}
+		    LootSpySession[rollid]["rolled"] = 2
+		  end
+		  LootSpySession[rollid]["needNames"][number] = playerName
+		  break
+		elseif (rollType == "end") then
 		  LootSpySession[rollid]["timeWon"] = GetTime()
 		  break
 		elseif (rollType == "need") then
@@ -464,12 +487,17 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 	if not (LootSpy_Saved) then return end
 	if not (LootSpy_Saved["on"] == true) then return end -- if not enabled return
 
-	if msg:match(LS_ROLLED_DE) or msg:match(LS_ROLLED_GREED) -- many rolls falling through causes noticable slowdown
-		or msg:match(LS_ROLLED_NEED) then return         -- maybe this will help some
-	end
-
-	local item, name
+	local item, name, number
 	local i = UnitName("player")
+
+	number, item, name = LootSpy_unformat(LS_ROLLED_DE, msg)
+	if number then LootSpy_SaveRoll(item, "rollgreed", name, number) return end
+
+	number, item, name = LootSpy_unformat(LS_ROLLED_GREED, msg)
+	if number then LootSpy_SaveRoll(item, "rollgreed", name, number) return end
+
+	number, item, name = LootSpy_unformat(LS_ROLLED_NEED, msg)
+	if number then LootSpy_SaveRoll(item, "rollneed", name, number) return end
 
 	item = LootSpy_unformat(LS_YOU_WON, msg)
 	if item then LootSpy_SaveRoll(item, "end") return end
