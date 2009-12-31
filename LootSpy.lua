@@ -261,15 +261,16 @@ function LootSpy_Slash(arg)
 end
 
 function LootSpy_OnEvent(self, event, ...)
-	local addon = ... or "n/a"
-
 	if event == "ADDON_LOADED" then
+	  local addon = ... or "n/a"
 	  if addon ~= "LootSpy" then return end -- this is not the addon you're looking for
 	  self:UnregisterEvent("ADDON_LOADED")
 	  LootSpy_Init(self)
 	elseif event == "START_LOOT_ROLL" then
+	  if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	  LootSpy_START_LOOT_ROLL(...)
 	elseif event == "CHAT_MSG_LOOT" then
+	  if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	  LootSpy_CHAT_MSG_LOOT(...)
 	end
 end
@@ -543,6 +544,7 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 end
 
 function LootSpy_ChatFilter(self, event, msg)
+	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	if msg:match(LS_ROLLED_DE) or msg:match(LS_ROLLED_GREED) or msg:match(LS_ROLLED_NEED) then return true end
 	if msg:match(LS_ALL_PASSED) then return end -- not very likely :)
 
