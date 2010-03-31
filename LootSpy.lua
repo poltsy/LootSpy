@@ -2,7 +2,7 @@
 
 local LootSpySession = {}
 
-local LOOTSPY_VERSION = "3.3.5"
+local LOOTSPY_VERSION = "3.3.6"
 
 local LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
 local LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
@@ -21,6 +21,30 @@ local LS_WON = string.gsub(LOOT_ROLL_WON, "(%%s)", "(.+)")
 local LS_ROLLED_DE = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_DE, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
 local LS_ROLLED_GREED = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_GREED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
 local LS_ROLLED_NEED = string.gsub(string.gsub(string.gsub(LOOT_ROLL_ROLLED_NEED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)"), "(%-)", "%%-")
+
+local ingroup = false -- set to proper value in init function
+
+function LootSpy_GroupChanged(self)
+	if GetNumPartyMembers() == 0 and GetNumRaidMembers == 0 and ingroup then -- left
+	    self:UnregisterEvent("START_LOOT_ROLL")
+	    self:UnregisterEvent("CHAT_MSG_LOOT")
+	    ChatFrame_RemoveMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
+	    ingroup = false
+	    return
+	end
+
+	if GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0 and not ingroup then -- joined
+	  if (LootSpy_Saved["on"] == true) then -- don't register events when addon isn't enabled but keep track of party status
+	    self:RegisterEvent("START_LOOT_ROLL")
+	    self:RegisterEvent("CHAT_MSG_LOOT")
+	    if (LootSpy_Saved["hideSpam"] == true) then
+	      ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
+	    end
+	  end
+	  ingroup = true
+	  return
+	end
+end
 
 function LootSpyConfigFrame_OnEscapePressed(self)
 	if not (LootSpy_Saved) then return end
@@ -154,12 +178,17 @@ function LootSpy_Init(self)
 		end
 	end
 
-	if (LootSpy_Saved["on"] == true) then -- don't listen if we don't care
+	ingroup = (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0)
+
+	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("PARTY_MEMBERS_CHANGED")
+
+	if (LootSpy_Saved["on"] == true) and ingroup then -- don't listen if we don't care
 		self:RegisterEvent("START_LOOT_ROLL")
 		self:RegisterEvent("CHAT_MSG_LOOT")
 	end
 
-	if (LootSpy_Saved["on"] == true) and (LootSpy_Saved["hideSpam"] == true) then
+	if (LootSpy_Saved["on"] == true) and (LootSpy_Saved["hideSpam"] == true) and ingroup then
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 	end
 
@@ -183,6 +212,7 @@ function LootSpy_Slash(arg)
 			end
 			this:UnregisterEvent("START_LOOT_ROLL")
 			this:UnregisterEvent("CHAT_MSG_LOOT")
+			ChatFrame_RemoveMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 		else
 			LootSpy_Saved["on"] = true;
 			LootSpy_UpdateTable();
@@ -196,8 +226,13 @@ function LootSpy_Slash(arg)
 					end
 					getglobal(buttonName..i):Show();
 				end
-			this:RegisterEvent("START_LOOT_ROLL")
-			this:RegisterEvent("CHAT_MSG_LOOT")
+				if ingroup then
+					this:RegisterEvent("START_LOOT_ROLL")
+					this:RegisterEvent("CHAT_MSG_LOOT")
+					if (LootSpy_Saved["hideSpam"] == true) then
+						ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
+					end
+				end
 			end
 		end
 	elseif (arg == "locked") then
@@ -267,11 +302,11 @@ function LootSpy_OnEvent(self, event, ...)
 	  self:UnregisterEvent("ADDON_LOADED")
 	  LootSpy_Init(self)
 	elseif event == "START_LOOT_ROLL" then
-	  if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	  LootSpy_START_LOOT_ROLL(...)
 	elseif event == "CHAT_MSG_LOOT" then
-	  if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	  LootSpy_CHAT_MSG_LOOT(...)
+	elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
+	  LootSpy_GroupChanged(self)
 	end
 end
 
@@ -412,25 +447,21 @@ function LootSpy_unformat(fmt, msg) -- pattern matching and mangling magic lifte
 end
 
 function LootSpy_START_LOOT_ROLL(rollid)
-	if not (LootSpy_Saved) then return end
-
-	if (LootSpy_Saved["on"] == true) then
-	  local texture, itemName = GetLootRollItemInfo(rollid)
-	  local itemLink = GetLootRollItemLink(rollid)
-	  LootSpySession[rollid] = {
-	  	["name"] = itemName,
-	  	["icon"] = texture,
-	  	["link"] = itemLink,
-	  	["need"] = 0,
-	  	["needNames"] = {},
-	  	["greedNames"] = {}, -- adding these to see who is holding up the roll
-	  	["passNames"] = {},
-	  	["greed"] = 0,
-	  	["passed"] = 0,
-	  	["timeWon"] = 0,
-	  	["rolled"] = 0
-	  }
-	end
+	local texture, itemName = GetLootRollItemInfo(rollid)
+	local itemLink = GetLootRollItemLink(rollid)
+	LootSpySession[rollid] = {
+		["name"] = itemName,
+		["icon"] = texture,
+		["link"] = itemLink,
+		["need"] = 0,
+		["needNames"] = {},
+		["greedNames"] = {}, -- adding these to see who is holding up the roll
+		["passNames"] = {},
+		["greed"] = 0,
+		["passed"] = 0,
+		["timeWon"] = 0,
+		["rolled"] = 0
+	}
 	LootSpy_UpdateTable()
 end
 
@@ -485,9 +516,6 @@ function LootSpy_SaveRoll(itemLink, rollType, playerName, number)
 end
 
 function LootSpy_CHAT_MSG_LOOT(msg)
-	if not (LootSpy_Saved) then return end
-	if not (LootSpy_Saved["on"] == true) then return end -- if not enabled return
-
 	local item, name, number
 	local i = UnitName("player")
 
@@ -544,7 +572,6 @@ function LootSpy_CHAT_MSG_LOOT(msg)
 end
 
 function LootSpy_ChatFilter(self, event, msg)
-	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then return end
 	if msg:match(LS_ROLLED_DE) or msg:match(LS_ROLLED_GREED) or msg:match(LS_ROLLED_NEED) then return true end
 	if msg:match(LS_ALL_PASSED) then return end -- not very likely :)
 
