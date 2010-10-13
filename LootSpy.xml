@@ -61,12 +61,12 @@
 				GameTooltip:Hide();
 			</OnLeave>
 			<OnLoad>
-				getglobal(this:GetName().."NeedText"):SetFont("Fonts\\ARIALN.TTF", 24)
-				getglobal(this:GetName().."NeedText"):SetText("|cFFFF0000N|r")
-				getglobal(this:GetName().."GreedText"):SetFont("Fonts\\ARIALN.TTF", 24);
-				getglobal(this:GetName().."GreedText"):SetText("|cFF00FF00G|r")
-				getglobal(this:GetName().."PassedText"):SetFont("Fonts\\ARIALN.TTF", 24);
-				getglobal(this:GetName().."PassedText"):SetText("P")
+				getglobal(self:GetName().."NeedText"):SetFont("Fonts\\ARIALN.TTF", 24)
+				getglobal(self:GetName().."NeedText"):SetText("|cFFFF0000N|r")
+				getglobal(self:GetName().."GreedText"):SetFont("Fonts\\ARIALN.TTF", 24);
+				getglobal(self:GetName().."GreedText"):SetText("|cFF00FF00G|r")
+				getglobal(self:GetName().."PassedText"):SetFont("Fonts\\ARIALN.TTF", 24);
+				getglobal(self:GetName().."PassedText"):SetText("P")
 			</OnLoad>
 		</Scripts>
 	</Frame>
@@ -108,7 +108,7 @@
 				GameTooltip:Hide();
 			</OnLeave>
 			<OnLoad>
-				getglobal(this:GetName().."Text"):SetText("|cFFFF00000|cFF00FF00 0|r 0")
+				getglobal(self:GetName().."Text"):SetText("|cFFFF00000|cFF00FF00 0|r 0")
 			</OnLoad>
 		</Scripts>
 	</Frame>
@@ -120,26 +120,37 @@
 		<Scripts>
 			<OnMouseDown>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == false) then
-					LootSpy_LootButton1:StartMoving();
+					self:StartMoving();
 				end
 			</OnMouseDown>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") then
 					if (LootSpy_Saved["locked"] == false) then
-						LootSpy_LootButton1:StopMovingOrSizing();
+						self:StopMovingOrSizing();
 						LootSpy_UpdatePosition();
 					else
 						LootSpy_Remove(1);
 					end
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(1);
+					LootSpy_ItemTooltip(1, self);
 				end
 			</OnMouseUp>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(1);
+					LootSpy_Tooltip(1, self);
 				end
 			</OnEnter>
+			<OnDragStart>
+				if (LootSpy_Saved["locked"] == false) then
+					self:StartMoving();
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if (LootSpy_Saved["locked"] == false) then
+					self:StopMovingOrSizing();
+					LootSpy_UpdatePosition();
+				end
+			</OnDragStop>
 		</Scripts>
 	</Frame>
 	<Frame name="LootSpy_LootButton2" inherits="LootSpy_LootTableTemplate" parent="UIParent" enableMouse="true">
@@ -153,14 +164,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(2);
+					LootSpy_Tooltip(2, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(2);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(2);
+					LootSpy_ItemTooltip(2, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -176,14 +187,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(3);
+					LootSpy_Tooltip(3, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(3);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(3);
+					LootSpy_ItemTooltip(3, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -199,14 +210,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(4);
+					LootSpy_Tooltip(4, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(4);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(4);
+					LootSpy_ItemTooltip(4, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -222,14 +233,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(5);
+					LootSpy_Tooltip(5, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(5);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(5);
+					LootSpy_ItemTooltip(5, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -246,14 +257,14 @@
                 <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(6);
+                                        LootSpy_Tooltip(6, self);
                                 end 
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(6);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(6);
+                                        LootSpy_ItemTooltip(6, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -269,14 +280,14 @@
                 <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(7);
+                                        LootSpy_Tooltip(7, self);
                                 end
                         </OnEnter> 
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(7);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(7);
+                                        LootSpy_ItemTooltip(7, self);
                                 end 
                         </OnMouseUp>
                 </Scripts>
@@ -292,14 +303,14 @@
                 <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(8);
+                                        LootSpy_Tooltip(8, self);
                                 end
                         </OnEnter> 
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(8);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(8);
+                                        LootSpy_ItemTooltip(8, self);
                                 end 
                         </OnMouseUp>
                 </Scripts>
@@ -315,14 +326,14 @@
                 <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(9);
+                                        LootSpy_Tooltip(9, self);
                                 end
                         </OnEnter> 
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(9);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(9);
+                                        LootSpy_ItemTooltip(9, self);
                                 end 
                         </OnMouseUp>
                 </Scripts>
@@ -338,14 +349,14 @@
                 <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(10);
+                                        LootSpy_Tooltip(10, self);
                                 end
                         </OnEnter> 
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(10);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(10);
+                                        LootSpy_ItemTooltip(10, self);
                                 end 
                         </OnMouseUp>
                 </Scripts>
@@ -360,26 +371,38 @@
 		<Scripts>
 			<OnMouseDown>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == false) then
-					LootSpy_CompactLootButton1:StartMoving();
+					DEFAULT_CHAT_FRAME:AddMessage("Mouse down");
+					self:StartMoving();
 				end
 			</OnMouseDown>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") then
 					if (LootSpy_Saved["locked"] == false) then
-						LootSpy_CompactLootButton1:StopMovingOrSizing();
+						self:StopMovingOrSizing();
 						LootSpy_UpdatePosition();
 					else
 						LootSpy_Remove(1);
 					end
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(1);
+					LootSpy_ItemTooltip(1, self);
 				end
 			</OnMouseUp>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(1);
+					LootSpy_Tooltip(1, self);
 				end
 			</OnEnter>
+			<OnDragStart>
+				if (LootSpy_Saved["locked"] == false) then
+					self:StartMoving();
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if (LootSpy_Saved["locked"] == false) then
+					self:StopMovingOrSizing();
+					LootSpy_UpdatePosition();
+				end
+			</OnDragStop>
 		</Scripts>
 	</Frame>
 	<Frame name="LootSpy_CompactLootButton2" inherits="LootSpy_CompactLootTableTemplate" parent="UIParent" enableMouse="true">
@@ -393,14 +416,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(2);
+					LootSpy_Tooltip(2, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(2);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(2);
+					LootSpy_ItemTooltip(2, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -416,14 +439,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(3);
+					LootSpy_Tooltip(3, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(3);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(3);
+					LootSpy_ItemTooltip(3, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -439,14 +462,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(4);
+					LootSpy_Tooltip(4, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(4);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(4);
+					LootSpy_ItemTooltip(4, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -462,14 +485,14 @@
 		<Scripts>
 			<OnEnter>
 				if (LootSpy_Saved["locked"] == true) then
-					LootSpy_Tooltip(5);
+					LootSpy_Tooltip(5, self);
 				end
 			</OnEnter>
 			<OnMouseUp>
 				if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
 					LootSpy_Remove(5);
 				elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-					LootSpy_ItemTooltip(5);
+					LootSpy_ItemTooltip(5, self);
 				end
 			</OnMouseUp>
 		</Scripts>
@@ -485,14 +508,14 @@
                 <Scripts> 
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(6);
+                                        LootSpy_Tooltip(6, self);
                                 end
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(6);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(6);
+                                        LootSpy_ItemTooltip(6, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -508,14 +531,14 @@
                 <Scripts> 
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(7);
+                                        LootSpy_Tooltip(7, self);
                                 end
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(7);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(7);
+                                        LootSpy_ItemTooltip(7, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -526,19 +549,19 @@
                                 <Offset>
                                         <AbsDimension x="0" y="40"/>
                                 </Offset>
-                        </Anchor>  
+                        </Anchor>
                 </Anchors>
-                <Scripts> 
+                <Scripts>
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(8);
+                                        LootSpy_Tooltip(8, self);
                                 end
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(8);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(8);
+                                        LootSpy_ItemTooltip(8, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -554,14 +577,14 @@
                 <Scripts> 
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(9);
+                                        LootSpy_Tooltip(9, self);
                                 end
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(9);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(9);
+                                        LootSpy_ItemTooltip(9, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -577,14 +600,14 @@
                 <Scripts> 
                         <OnEnter>
                                 if (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_Tooltip(10);
+                                        LootSpy_Tooltip(10, self);
                                 end
                         </OnEnter>
                         <OnMouseUp>
                                 if (arg1 == "LeftButton") and (LootSpy_Saved["locked"] == true) then
                                         LootSpy_Remove(10);
                                 elseif (arg1 == "RightButton") and (LootSpy_Saved["locked"] == true) then
-                                        LootSpy_ItemTooltip(10);
+                                        LootSpy_ItemTooltip(10, self);
                                 end
                         </OnMouseUp>
                 </Scripts>
@@ -605,7 +628,7 @@
 				</Anchor>
 			</Anchors>
 			<Scripts>
-				<OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BENABLED.."|r"); </OnLoad>
+				<OnLoad> getglobal(self:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BENABLED.."|r"); </OnLoad>
 				<OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
 			</Scripts>
 		</CheckButton>
@@ -616,7 +639,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts>
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BLOCKED.."|r"); </OnLoad>
+                                <OnLoad> getglobal(self:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BLOCKED.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>
@@ -627,7 +650,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts> 
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BHIDESPAM.."|r"); </OnLoad>
+                                <OnLoad> getglobal(self:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BHIDESPAM.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>
@@ -638,7 +661,7 @@
                                 <Offset><AbsDimension x="0" y="-34"/></Offset> </Anchor>
                         </Anchors>
                         <Scripts> 
-                                <OnLoad> getglobal(this:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BCOMPACT.."|r"); </OnLoad>
+                                <OnLoad> getglobal(self:GetName().."Text"):SetText("|cFFFFFFFF"..LS_BCOMPACT.."|r"); </OnLoad>
                                 <OnClick> LootSpyConfigFrame_OnClick(self); </OnClick>
                         </Scripts>
                 </CheckButton>
@@ -651,14 +674,14 @@
 				</Anchor>
 			</Anchors>
 			<Scripts>
-                                <OnLoad> this:SetAutoFocus(false); </OnLoad>
+                                <OnLoad> self:SetAutoFocus(false); </OnLoad>
 				<OnEnterPressed>
 					LootSpyConfigFrame_OnEnterPressed(self);
-					this:ClearFocus();
+					self:ClearFocus();
 				</OnEnterPressed>
 				<OnEscapePressed>
 					LootSpyConfigFrame_OnEscapePressed(self);
-					this:ClearFocus();
+					self:ClearFocus();
 				</OnEscapePressed>
                         </Scripts>
 		</EditBox>
@@ -710,7 +733,7 @@
 				LootSpyConfigFrame_OnLoad(self);
 			</OnLoad>
 			<OnShow>
-				LootSpyConfigFrame_OnShow();
+				LootSpyConfigFrame_OnShow(self);
 			</OnShow>
 		</Scripts>
 	</Frame>
@@ -719,6 +742,8 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterEvent("ADDON_LOADED");
+				LootSpy_LootButton1:RegisterForDrag("LeftButton");
+				LootSpy_CompactLootButton1:RegisterForDrag("LeftButton");
 			</OnLoad>
 			<OnEvent>
 				LootSpy_OnEvent(self, event, ...);

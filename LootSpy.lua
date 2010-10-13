@@ -2,7 +2,7 @@
 
 local LootSpySession = {}
 
-local LOOTSPY_VERSION = "3.3.6"
+local LOOTSPY_VERSION = "4.0.1"
 
 local LS_ALL_PASSED = string.gsub(LOOT_ROLL_ALL_PASSED, "(%%s)", "(.+)")
 local LS_GREED = string.gsub(LOOT_ROLL_GREED, "(%%s)", "(.+)")
@@ -65,16 +65,16 @@ function LootSpyConfigFrame_OnClick(self)
 	if not (LootSpy_Saved) then return end
 
 	-- I'm lazy so I'll just reuse the already existing slash function
-	if ( self:GetName() == (this:GetParent():GetName().."CheckButtonToggle") ) then
+	if ( self:GetName() == (self:GetParent():GetName().."CheckButtonToggle") ) then
 		setting = "toggle"
-	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonLocked") ) then
+	elseif ( self:GetName() == (self:GetParent():GetName().."CheckButtonLocked") ) then
 		setting = "locked"
-	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonSpam") ) then
+	elseif ( self:GetName() == (self:GetParent():GetName().."CheckButtonSpam") ) then
 		setting = "spam"
-	elseif ( self:GetName() == (this:GetParent():GetName().."CheckButtonCompact") ) then
+	elseif ( self:GetName() == (self:GetParent():GetName().."CheckButtonCompact") ) then
 		setting = "compact"
 	end
-	LootSpy_Slash(setting);
+	LootSpy_Slash(setting, self);
 end
 
 function LootSpyConfigFrame_OnLoad(panel)
@@ -126,15 +126,15 @@ function LootSpyConfigFrame_SetSettings()
 	LootSpyConfigFrameEditBoxFade:SetText( LootSpy_Saved["fade"] );
 end
 
-function LootSpyConfigFrame_OnShow()
+function LootSpyConfigFrame_OnShow(self)
 	if not (LootSpy_Saved) then return end
 
 	LootSpyConfigFrame_SetSettings();
-	getglobal(this:GetName().."TitleFontString"):SetFont("Fonts\\FRIZQT__.TTF", 16);
-	getglobal(this:GetName().."TitleFontString"):SetText("LootSpy");
-	getglobal(this:GetName().."DescFontString"):SetFont("Fonts\\FRIZQT__.TTF", 10);
-	getglobal(this:GetName().."DescFontString"):SetText("|cFFFFFFFF"..LS_DESCTEXT.."|r");
-	getglobal(this:GetName().."VersionFontString"):SetText("LootSpy "..LOOTSPY_VERSION);
+	getglobal(self:GetName().."TitleFontString"):SetFont("Fonts\\FRIZQT__.TTF", 16);
+	getglobal(self:GetName().."TitleFontString"):SetText("LootSpy");
+	getglobal(self:GetName().."DescFontString"):SetFont("Fonts\\FRIZQT__.TTF", 10);
+	getglobal(self:GetName().."DescFontString"):SetText("|cFFFFFFFF"..LS_DESCTEXT.."|r");
+	getglobal(self:GetName().."VersionFontString"):SetText("LootSpy "..LOOTSPY_VERSION);
 end
 
 function LootSpy_Init(self)
@@ -197,7 +197,7 @@ function LootSpy_Init(self)
 	SlashCmdList["LOOTSPY"] = LootSpy_Slash;
 end
 
-function LootSpy_Slash(arg)
+function LootSpy_Slash(arg, self)
 	if (arg == "toggle") then
 		if (LootSpy_Saved["on"] == true) then
 			LootSpy_Saved["on"] = false;
@@ -210,8 +210,8 @@ function LootSpy_Slash(arg)
 				end
 				getglobal(buttonName..i):Hide();
 			end
-			this:UnregisterEvent("START_LOOT_ROLL")
-			this:UnregisterEvent("CHAT_MSG_LOOT")
+			self:UnregisterEvent("START_LOOT_ROLL")
+			self:UnregisterEvent("CHAT_MSG_LOOT")
 			ChatFrame_RemoveMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 		else
 			LootSpy_Saved["on"] = true;
@@ -227,8 +227,8 @@ function LootSpy_Slash(arg)
 					getglobal(buttonName..i):Show();
 				end
 				if ingroup then
-					this:RegisterEvent("START_LOOT_ROLL")
-					this:RegisterEvent("CHAT_MSG_LOOT")
+					self:RegisterEvent("START_LOOT_ROLL")
+					self:RegisterEvent("CHAT_MSG_LOOT")
 					if (LootSpy_Saved["hideSpam"] == true) then
 						ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", LootSpy_ChatFilter)
 					end
@@ -365,8 +365,8 @@ function LootSpy_UpdateTable()
 	end
 end
 
-function LootSpy_Tooltip(id)
-	GameTooltip:SetOwner(this,"ANCHOR_CURSOR");
+function LootSpy_Tooltip(id, self)
+	GameTooltip:SetOwner(self,"ANCHOR_CURSOR");
 	local name = "nil";
 	for item in pairs(LootSpySession) do
 		id = id - 1;
@@ -396,8 +396,8 @@ function LootSpy_Tooltip(id)
 	GameTooltip:Show();
 end
 
-function LootSpy_ItemTooltip(id)
-	GameTooltip:SetOwner(this,"ANCHOR_CURSOR");
+function LootSpy_ItemTooltip(id, self)
+	GameTooltip:SetOwner(self,"ANCHOR_CURSOR");
 	local itemLink = "nil";
 	for item in pairs(LootSpySession) do
 		id = id - 1;
