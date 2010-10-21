@@ -1,5 +1,7 @@
-## Interface: 30300
+## Interface: 40000
 ## Title: LootSpy
+## Version: 4.0.2
+## URL: http://github.com/poltsy/LootSpy
 ## Notes: Watches Need/Greed rolls on loot
 ## SavedVariables: LootSpy_Saved
 LootSpy.lua
