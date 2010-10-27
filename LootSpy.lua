@@ -375,6 +375,7 @@ function LootSpy_Tooltip(id, self)
 			break
 		end
 	end
+	if not (LootSpySession[name]["name"]) then return end
 	GameTooltip:SetText(LootSpySession[name]["name"]);
 	for number, player in pairs(LootSpySession[name]["needNames"]) do
 	    if LootSpySession[name]["rolled"] == 2 then
